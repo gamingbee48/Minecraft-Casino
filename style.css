@@ -1,0 +1,141 @@
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #2c2c2c;
+  color: white;
+}
+
+#grid {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  gap: 10px;
+}
+
+.cell {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: #444;
+}
+
+.cell img {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.preview {
+  width: 200px;
+}
+
+#resultImg {
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 40px;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+#diamonds {
+  font-size: 18px;
+  font-weight: bold;
+  color: #00ffff;
+}
+
+button {
+  padding: 10px 20px;
+  font-family: 'Minecraft', sans-serif;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button:disabled {
+  background: #666;
+  cursor: not-allowed;
+}
+
+.arrow {
+  font-size: 60px;
+  color: white;
+  user-select: none;
+}
+
+.preview {
+  width: 120px;
+  height: 120px;
+}
+
+#resultBox {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  background: #444;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid #777;
+}
+
+#gameOverMsg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  color: #ff4444;
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.2;
+  text-shadow: 2px 2px 0 #000;
+  border-radius: 4px;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.7; }
+  50% { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+.restart-btn {
+  background: #4CAF50;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-family: 'Minecraft', sans-serif;
+  cursor: pointer;
+  margin-top: 20px;
+  border-radius: 4px;
+}
+
+.restart-btn:hover {
+  background: #45a049;
+}
