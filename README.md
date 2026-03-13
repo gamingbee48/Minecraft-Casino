@@ -1,1 +1,1 @@
-https://gamingbee48.github.io/Crafting-Gamble/
+https://gamingbee48.github.io/Minecraft-Casino/
