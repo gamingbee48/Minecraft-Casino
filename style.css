@@ -1,0 +1,60 @@
+/* Minecraft Casino Styles */
+
+body {
+    font-family: 'Minecraft', sans-serif;
+    background: linear-gradient(to bottom, #87CEEB 0%, #98FB98 50%, #228B22 100%);
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    color: #FFFFFF;
+    text-shadow: 2px 2px 0px #000000;
+}
+
+#diamonds {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+h1 {
+    font-size: 4em;
+    margin-bottom: 50px;
+    text-align: center;
+    color: #FFD700;
+    text-shadow: 3px 3px 0px #000000;
+}
+
+button {
+    background: #8B4513;
+    border: 3px solid #654321;
+    color: #FFFFFF;
+    font-size: 1.5em;
+    padding: 15px 30px;
+    cursor: pointer;
+    font-family: 'Minecraft', sans-serif;
+    text-shadow: 1px 1px 0px #000000;
+    box-shadow: 5px 5px 0px #000000;
+    transition: all 0.1s;
+}
+
+button:hover {
+    background: #A0522D;
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0px #000000;
+}
+
+button:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0px 0px 0px #000000;
+}
