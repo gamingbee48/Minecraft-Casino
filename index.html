@@ -1,29 +1,40 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>Minecraft Casino</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.cdnfonts.com/css/minecraft-3" rel="stylesheet">
-<style>
-    body {
-      font-family: 'Minecraft', sans-serif;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mines Gamble</title>
+    <link rel="icon" type="image/png" href="textures/tnt.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.cdnfonts.com/css/minecraft-3" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Minecraft', sans-serif;
+        }
+    </style>
 </head>
-
 <body>
+    <h1>Mines Gamble</h1>
 
-<!-- Diamond display -->
-<div id="diamonds">
-  <img src="diamond.png" style="width:20px;"> 100
-</div>
-
-<h1>Minecraft Casino</h1>
-
-<!-- Button to open the crafting page -->
-<button onclick="openCrafting()">Crafting</button>
-
-<script src="script.js"></script>
+    <div class="container">
+        <div id="diamonds"><img src="textures/diamond.png" style="width:20px;"> 100</div>
+        <div id="board">
+            <div id="grid"></div>
+        </div>
+        <div id="setup">
+            <label for="bet">Bet:</label>
+            <input type="number" id="bet" min="1" value="10">
+            <label for="mines">Mines (1-24):</label>
+            <input type="number" id="mines" min="1" max="24" value="5">
+            <button id="startBtn">Start</button>
+        </div>
+        <div id="controls" class="hidden">
+            <p>Multiplier: <span id="multiplier">1.00</span>x</p>
+            <button id="cashoutBtn">Cash Out</button>
+        </div>
+        <button id="homeBtn">Home</button>
+        <div id="message"></div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
