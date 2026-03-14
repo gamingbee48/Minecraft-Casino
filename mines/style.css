@@ -1,0 +1,103 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+    background: #2c2c2c;
+    color: white;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    margin-top: 40px;
+}
+
+#diamonds {
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ffff;
+}
+
+#setup {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+#board {
+    margin: 20px 0;
+}
+
+#grid {
+    display: grid;
+    grid-template-columns: repeat(5, 85px);
+    grid-template-rows: repeat(5, 85px);
+    gap: 5px;
+    justify-content: center;
+}
+
+.tile {
+    width: 90px;
+    height: 90px;
+    background: #444;
+    border: 1px solid #777;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.tile img {
+    width: 80px;
+    height: 80px;
+    image-rendering: pixelated;
+}
+
+.tile.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.hidden {
+    display: none;
+}
+
+#controls {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+}
+
+#message {
+    margin-top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+button {
+    padding: 10px 20px;
+    font-family: 'Minecraft', sans-serif;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+#homeBtn {
+    background: #2196F3;
+}
+
+#cashoutBtn {
+    background: #FF9800;
+}
