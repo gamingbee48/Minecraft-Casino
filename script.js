@@ -16,6 +16,10 @@ function openMines() {
   window.location.href = "./mines/index.html";
 }
 
+function openChest() {
+  window.location.href = "./chests/index.html";
+}
+
 function openSlots() {
   window.location.href = "./slots/index.html";
 }
