@@ -41,7 +41,11 @@
 
   <div class="sidebar">
     <div id="diamonds"><img src="textures/diamond.png" style="width:20px;"> 100</div>
-    <button id="buyTicketBtn">Buy Ticket (10 diamonds)</button>
+    <div class="buy-section">
+      <input type="number" id="ticketAmount" min="1" value="1">
+      <button id="buyTicketBtn">Buy Tickets</button>
+    </div>
+
     <button id="cashoutBtn" disabled>Cashout</button>
     <button id="homeBtn" >Home</button>
   </div>

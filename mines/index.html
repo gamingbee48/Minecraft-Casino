@@ -12,7 +12,6 @@
             font-family: 'Minecraft', sans-serif;
         }
     </style>
-    <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Mines Gamble</h1>
@@ -25,8 +24,10 @@
         <div id="setup">
             <label for="bet">Bet:</label>
             <input type="number" id="bet" min="1" value="10">
+            <div><img src="textures/diamond.png" style="width:20px;"></div>
             <label for="mines">Mines (1-24):</label>
             <input type="number" id="mines" min="1" max="24" value="5">
+            <div><img src="textures/tnt.png" style="width:20px;"></div>
             <button id="startBtn">Start</button>
         </div>
         <div id="controls" class="hidden">
