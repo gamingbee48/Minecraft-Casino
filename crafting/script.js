@@ -3,6 +3,8 @@ let revealed = [];
 let isMouseDown = false;
 let diamonds = parseInt(localStorage.getItem("diamonds")) || 100;
 let currentCraftedItem = null;
+let currentTicketCost = 0;
+
 
 // Item values in diamonds
 const itemValues = {
@@ -405,7 +407,6 @@ function updateDiamonds() {
 // Wait for DOM to load
 document.addEventListener("DOMContentLoaded", function() {
   // Event listeners for buttons
-  document.getElementById("buyTicketBtn").addEventListener("click", buyTicket);
   document.getElementById("cashoutBtn").addEventListener("click", cashout);
   document.getElementById("homeBtn").addEventListener("click", home);
   
@@ -413,31 +414,32 @@ document.addEventListener("DOMContentLoaded", function() {
   document.getElementById("homeBtn").disabled = false;
 });
 
-// Buy ticket function
-function buyTicket() {
-  if (diamonds >= 10) {
-    diamonds -= 10;
-    localStorage.setItem("diamonds", diamonds);
-    updateDiamonds();
-    initGame();
-  } else {
-    alert("Not enough diamonds!");
-  }
-}
 
 // Cashout function
 function cashout() {
   if (currentCraftedItem && itemValues[currentCraftedItem]) {
-    diamonds += itemValues[currentCraftedItem];
+
+    const baseValue = itemValues[currentCraftedItem];
+
+    // payout relativ zum Einsatz
+    const payout = Math.round(baseValue * (currentTicketCost / 10));
+
+    diamonds += payout;
+
     localStorage.setItem("diamonds", diamonds);
     updateDiamonds();
+
     clearResult();
     currentCraftedItem = null;
+    currentTicketCost = 0;
+
     document.getElementById("cashoutBtn").disabled = true;
     document.getElementById("homeBtn").disabled = false;
+
     resetGame();
   }
 }
+
 
 function home() {
   if (document.getElementById("cashoutBtn").disabled) {
@@ -643,3 +645,29 @@ function checkRecipes() {
     document.getElementById("homeBtn").disabled = false;
   }
 }
+
+
+
+document.getElementById("buyTicketBtn").onclick = function () {
+
+  const amount = parseInt(document.getElementById("ticketAmount").value);
+  const pricePerTicket = 1;
+
+  const totalCost = amount * pricePerTicket;
+
+  if (diamonds >= totalCost) {
+
+    diamonds -= totalCost;
+
+    currentTicketCost = totalCost; // speichern was der Spieler bezahlt hat
+
+    localStorage.setItem("diamonds", diamonds);
+    updateDiamonds();
+
+    initGame();
+
+  } else {
+    alert("Not enough diamonds!");
+  }
+};
+

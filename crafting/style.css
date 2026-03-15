@@ -139,3 +139,17 @@ button:disabled {
 .restart-btn:hover {
   background: #45a049;
 }
+
+
+.buy-section {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+#ticketAmount {
+  width: 60px;
+  padding: 6px;
+  font-family: 'Minecraft', sans-serif;
+  text-align: center;
+}

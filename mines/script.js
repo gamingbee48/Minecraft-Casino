@@ -56,11 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
     function startGame() {
         bet = parseInt(betInput.value);
         mines = parseInt(minesInput.value);
-        if (bet < 1 || diamonds < bet || mines < 1 || mines > 24) {
-            message.textContent = 'Invalid bet, not enough diamonds, or mines count.';
+
+        if (bet < 1 || mines < 1 || mines > 24) {
+            message.textContent = 'Invalid bet.';
             setTimeout(() => message.textContent = '', 2000);
             return;
-        }
+    }
+    
         diamonds -= bet;
         localStorage.setItem("diamonds", diamonds);
         updateDiamonds();
