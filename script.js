@@ -16,6 +16,10 @@ function openMines() {
   window.location.href = "./mines/index.html";
 }
 
+function openSlots() {
+  window.location.href = "./slots/index.html";
+}
+
 // Load saved diamonds when the page starts
 window.onload = function () {
 
