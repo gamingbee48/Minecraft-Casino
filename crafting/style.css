@@ -153,3 +153,17 @@ button:disabled {
   font-family: 'Minecraft', sans-serif;
   text-align: center;
 }
+
+
+button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+#homeBtn {
+    background: #2196F3;
+}
+
+#cashoutBtn {
+    background: #FF9800;
+}
