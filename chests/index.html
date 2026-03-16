@@ -1,1 +1,58 @@
-more content coming
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Minecraft Chest Unboxing</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<h1>Minecraft Chest Unboxing</h1>
+
+<div id="topBar">
+
+<button id="homeBtn">Home</button>
+
+<div id="diamondDisplay">
+💎 Diamonds: <span id="diamondCount">0</span>
+</div>
+
+</div>
+
+<hr>
+
+<div id="chests">
+
+<button onclick="openChest('dungeon')">
+Dungeon Chest (25💎)
+</button>
+
+<button onclick="openChest('village')">
+Village Chest (40💎)
+</button>
+
+<button onclick="openChest('end')">
+End City Chest (120💎)
+</button>
+
+</div>
+
+<hr>
+
+<div id="resultBox">
+
+<h2>Result</h2>
+
+<p id="resultText">
+Open a chest!
+</p>
+
+</div>
+
+<p id="message"></p>
+
+<script src="script.js"></script>
+
+</body>
+</html>

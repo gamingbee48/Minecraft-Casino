@@ -8,6 +8,23 @@ let safeRevealed = 0;
 let multiplier = 1.0;
 let gameActive = false;
 
+// Change favicon when tab visibility changes
+function setFavicon(iconPath) {
+    let link = document.querySelector("link[rel*='icon']") || document.createElement('link');
+    link.type = 'image/png';
+    link.rel = 'icon';
+    link.href = iconPath;
+    document.head.appendChild(link);
+}
+
+document.addEventListener("visibilitychange", function() {
+    if (document.hidden) {
+        setFavicon("textures/gunpowder.png");
+    } else {
+        setFavicon("textures/tnt.png");
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const betInput = document.getElementById('bet');
     const minesInput = document.getElementById('mines');
@@ -119,9 +136,33 @@ document.addEventListener('DOMContentLoaded', () => {
         diamonds += win;
         localStorage.setItem("diamonds", diamonds);
         updateDiamonds();
+
+        for (let i = 0; i < 25; i++) {
+            const tile = grid.children[i];
+            const img = tile.querySelector('img');
+
+            if (isMine[i]) {
+                img.src = 'textures/tnt.png';
+            } 
+            else if (revealed[i]) {
+                setTimeout(() => {
+
+                    img.classList.remove("diamond-win");
+                    void img.offsetWidth; // force animation restart
+                    img.classList.add("diamond-win");
+
+                }, i * 40);
+            }
+        }
+
         message.textContent = `Cashed out! Won ${win} diamonds.`;
-        endGame();
+
+        // warten bis Animation fertig ist
+        setTimeout(() => {
+            endGame();
+        }, 1200);
     }
+
 
     function gameOver(won) {
         gameActive = false;
