@@ -80,3 +80,12 @@ button {
 #chestImg.opening {
     transform: scale(1.3) rotate(5deg);
 }
+
+#diamonds {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #00ffff;
+}

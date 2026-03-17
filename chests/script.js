@@ -1,5 +1,5 @@
 // Diamonds
-let diamonds = 200;
+let diamonds = parseInt(localStorage.getItem("diamonds")) || 100;
 
 // Lootpool
 const lootPool = [
@@ -26,6 +26,7 @@ const openSound = new Audio("textures/chest_open.mp3");
 // Update diamonds
 function updateDiamonds() {
     diamondDisplay.textContent = diamonds;
+    localStorage.setItem("diamonds", diamonds);
 }
 
 // Random item
