@@ -1,6 +1,111 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Slot Machine</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.cdnfonts.com/css/minecraft-3" rel="stylesheet">
+</head>
+<body>
+    <div id="topBar">
+        <button id="homeBtn">Home</button>
+        <div id="diamonds">
+            <img src="textures/diamond.png" class="diamondIcon"> 100
+        </div>
+    </div>
 
-currently under development, check back later!
-<a href="../index.html">Home</a>
+    <h1>Minecraft Slot Machine</h1>
 
+    <!-- Slot Machine Main Display -->
+    <div id="slotMachine">
+        <div id="slotContainer">
+            <div id="slotWindow">
+                <div id="reel1" class="reel"></div>
+                <div id="reel2" class="reel"></div>
+                <div id="reel3" class="reel"></div>
+            </div>
+            <div id="slotMarker"></div>
+        </div>
+        
+        <!-- Payline indicator -->
+        <div id="payline"></div>
+    </div>
+
+    <!-- Controls -->
+    <div id="controls">
+        <div id="betSection">
+            <button id="decreaseBet">-</button>
+            <span id="betAmount">5</span>
+            <button id="increaseBet">+</button>
+        </div>
+        
+        <button id="spinBtn" class="spin-button">
+            <span>SPIN</span>
+            <span id="spinCost">(<img src="textures/diamond.png" class="diamondIcon"> 5)</span>
+        </button>
+        
+        <button id="maxBetBtn">MAX BET</button>
+    </div>
+
+    <!-- Result Display -->
+    <div id="resultBox">
+        <h2>Result</h2>
+        <p id="resultText">Pull the lever!</p>
+        <div id="winDisplay" class="hidden">
+            <span id="winAmount">0</span>
+            <img src="textures/diamond.png" class="diamondIcon">
+        </div>
+    </div>
+
+    <!-- Paytable -->
+    <div id="paytable">
+        <h3>Payouts</h3>
+        <div class="paytable-row">
+            <div class="paytable-item">
+                <img src="textures/netherite_ingot.png" class="paytable-icon">
+                <span>3x = 300</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/diamond_sword.png" class="paytable-icon">
+                <span>3x = 120</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/enchanted_book.png" class="paytable-icon">
+                <span>3x = 100</span>
+            </div>
+        </div>
+        <div class="paytable-row">
+            <div class="paytable-item">
+                <img src="textures/golden_apple.png" class="paytable-icon">
+                <span>3x = 50</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/iron_chestplate.png" class="paytable-icon">
+                <span>3x = 15</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/iron_sword.png" class="paytable-icon">
+                <span>3x = 10</span>
+            </div>
+        </div>
+        <div class="paytable-row">
+            <div class="paytable-item">
+                <img src="textures/apple.png" class="paytable-icon">
+                <span>3x = 5</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/iron_nugget.png" class="paytable-icon">
+                <span>3x = 3</span>
+            </div>
+            <div class="paytable-item">
+                <img src="textures/stick.png" class="paytable-icon">
+                <span>3x = 1</span>
+            </div>
+        </div>
+        <p class="paytable-note">Any 2 matching = 2x bet | Any match = 1x bet</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>

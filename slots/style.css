@@ -1,0 +1,331 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Minecraft', sans-serif;
+    background: #1a1a1a;
+    color: #ffffff;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    image-rendering: pixelated;
+}
+
+#topBar {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background: #2d2d2d;
+    border: 4px solid #4a4a4a;
+    margin-bottom: 20px;
+}
+
+button {
+    font-family: 'Minecraft', sans-serif;
+    padding: 10px 20px;
+    background: #7c7c7c;
+    border: 4px solid #4a4a4a;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+    text-shadow: 2px 2px 0 #3f3f3f;
+    transition: all 0.1s ease;
+}
+
+button:hover {
+    background: #9c9c9c;
+    transform: scale(1.05);
+}
+
+button:active {
+    transform: translateY(2px);
+}
+
+#homeBtn {
+    background: #4a6ea8;
+    border-color: #2a3f6a;
+}
+
+#diamonds {
+    font-size: 24px;
+    color: #55ffff;
+    text-shadow: 2px 2px 0 #0088aa;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.diamondIcon {
+    width: 24px;
+    height: 24px;
+    image-rendering: pixelated;
+}
+
+h1 {
+    font-size: 48px;
+    color: #ffaa00;
+    text-shadow: 4px 4px 0 #aa5500;
+    margin: 20px 0;
+}
+
+/* Slot Machine */
+#slotMachine {
+    background: #3d3d3d;
+    padding: 30px;
+    border: 8px solid #5d5d5d;
+    border-radius: 20px;
+    margin: 20px 0;
+    box-shadow: 0 10px 0 #2d2d2d;
+    position: relative;
+}
+
+#slotContainer {
+    position: relative;
+    width: 660px;
+    height: 620px; /* Increased to fit 3 rows */
+    overflow: hidden;
+    border: 8px solid #2a2a2a;
+    background: #0a0a0a;
+    border-radius: 10px;
+}
+
+#slotWindow {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    gap: 5px;
+    padding: 10px;
+}
+
+.reel {
+    flex: 1;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: #1a1a1a;
+    border: 2px solid #3d3d3d;
+    border-radius: 5px;
+    padding: 10px 0;
+    transition: all 0.3s ease;
+}
+
+.reel-item {
+    width: 100%;
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2a2a2a;
+    border: 2px solid #4a4a4a;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.reel-item img {
+    width: 120px;
+    height: 120px;
+    image-rendering: pixelated;
+    object-fit: contain;
+}
+
+#slotMarker {
+    position: absolute;
+    left: 50%;
+    top: 0;
+    width: 4px;
+    height: 100%;
+    background: #ff0000;
+    transform: translateX(-50%);
+    z-index: 10;
+    box-shadow: 0 0 10px #ff0000;
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+#payline {
+    position: absolute;
+    width: 100%;
+    height: 4px;
+    background: #ffaa00;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    opacity: 0.6;
+    box-shadow: 0 0 15px #ffaa00;
+    pointer-events: none;
+    z-index: 5;
+}
+
+/* Spinning animation */
+.reel.spinning-active {
+    animation: flash 0.2s infinite;
+}
+
+@keyframes flash {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Rarity colors */
+.common img { filter: brightness(1); }
+.uncommon img { filter: drop-shadow(0 0 8px #2ecc71); }
+.rare img { filter: drop-shadow(0 0 12px #3498db); }
+.epic img { filter: drop-shadow(0 0 16px #9b59b6); }
+.legendary img { filter: drop-shadow(0 0 20px gold); }
+
+/* Controls */
+#controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+    background: #2d2d2d;
+    padding: 20px;
+    border: 4px solid #4a4a4a;
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+#betSection {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a1a1a;
+    padding: 5px 15px;
+    border: 4px solid #4a4a4a;
+    border-radius: 5px;
+}
+
+#betSection button {
+    padding: 5px 15px;
+    font-size: 20px;
+    background: #4a6ea8;
+    min-width: 40px;
+}
+
+#betAmount {
+    font-size: 24px;
+    min-width: 60px;
+    text-align: center;
+    color: #ffaa00;
+}
+
+.spin-button {
+    background: #44aa44;
+    border-color: #2a6a2a;
+    padding: 15px 40px;
+    font-size: 24px;
+    min-width: 200px;
+}
+
+#maxBetBtn {
+    background: #aa4444;
+    border-color: #6a2a2a;
+}
+
+/* Result Box */
+#resultBox {
+    background: #2d2d2d;
+    padding: 20px;
+    border: 4px solid #4a4a4a;
+    margin: 20px 0;
+    min-width: 300px;
+    text-align: center;
+    border-radius: 10px;
+}
+
+#resultText {
+    font-size: 20px;
+    margin: 10px 0;
+    color: #ffaa00;
+}
+
+#winDisplay {
+    font-size: 32px;
+    color: #55ff55;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Paytable */
+#paytable {
+    background: #2d2d2d;
+    padding: 20px;
+    border: 4px solid #4a4a4a;
+    margin: 20px 0;
+    width: 100%;
+    max-width: 800px;
+    border-radius: 10px;
+}
+
+#paytable h3 {
+    color: #ffaa00;
+    margin-bottom: 15px;
+    font-size: 24px;
+    text-align: center;
+}
+
+.paytable-row {
+    display: flex;
+    justify-content: space-around;
+    margin: 10px 0;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.paytable-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #1a1a1a;
+    padding: 8px 15px;
+    border: 2px solid #4a4a4a;
+    border-radius: 5px;
+    min-width: 150px;
+}
+
+.paytable-icon {
+    width: 32px;
+    height: 32px;
+    image-rendering: pixelated;
+}
+
+.paytable-note {
+    margin-top: 15px;
+    color: #aaaaaa;
+    font-size: 14px;
+    text-align: center;
+}
+
+.hidden {
+    display: none !important;
+}
+
+@keyframes winPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.win-animation {
+    animation: winPulse 0.5s ease 2;
+}
+
+.spin-button.spinning {
+    background: #888888;
+    pointer-events: none;
+    opacity: 0.7;
+}
