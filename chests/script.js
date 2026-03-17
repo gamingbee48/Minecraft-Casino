@@ -3,10 +3,13 @@ let diamonds = parseInt(localStorage.getItem("diamonds")) || 100;
 
 // Lootpool
 const lootPool = [
-    { name: "iron_sword", value: 20, rarity: "common" },
-    { name: "iron_chestplate", value: 25, rarity: "common" },
-    { name: "golden_apple", value: 40, rarity: "uncommon" },
-    { name: "enchanted_book", value: 70, rarity: "rare" },
+    { name: "stick", value: 1, rarity: "common" },
+    { name: "iron_nugget", value: 3, rarity: "common" },
+    { name: "apple", value: 5, rarity: "common" },
+    { name: "iron_sword", value: 10, rarity: "common" },
+    { name: "iron_chestplate", value: 15, rarity: "common" },
+    { name: "golden_apple", value: 50, rarity: "uncommon" },
+    { name: "enchanted_book", value: 100, rarity: "rare" },
     { name: "diamond_sword", value: 120, rarity: "epic" },
     { name: "netherite_ingot", value: 300, rarity: "legendary" }
 ];
@@ -19,6 +22,10 @@ const chestImg = document.getElementById("chestImg");
 const spinnerSection = document.getElementById("spinnerSection");
 const chestScreen = document.getElementById("chestScreen");
 const openBtn = document.getElementById("openBtn");
+
+//hide results at start
+resultText.hidden = true;
+resultBox.hidden = true;
 
 // Sounds
 const openSound = new Audio("textures/chest_open.mp3");
