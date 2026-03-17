@@ -147,8 +147,14 @@ function startSpin() {
     }, 4000);
 }
 
+function home() {
+    window.location.href = "../index.html";
+  }
+
+
 // Event
 openBtn.addEventListener("click", openChest);
+homeBtn.addEventListener("click", home);
 
 // Init
 updateDiamonds();
