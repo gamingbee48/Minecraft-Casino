@@ -93,6 +93,9 @@ function openChest() {
     diamonds -= 25;
     updateDiamonds();
 
+    openBtn.hidden = true;
+    homeBtn.hidden = true;
+
     openSound.currentTime = 0;
     openSound.play();
 
@@ -142,6 +145,8 @@ function startSpin() {
         setTimeout(() => {
             spinnerSection.classList.add("hidden");
             chestScreen.classList.remove("hidden");
+            openBtn.hidden = false;
+            homeBtn.hidden = false;
         }, 1500);
 
     }, 4000);
