@@ -1,137 +1,154 @@
-let diamonds = parseInt(localStorage.getItem("diamonds")) || 100;
-let gameActive = false;
+// Diamonds
+let diamonds = 200;
 
-const diamondText = document.getElementById("diamondCount");
+// Lootpool
+const lootPool = [
+    { name: "iron_sword", value: 20, rarity: "common" },
+    { name: "iron_chestplate", value: 25, rarity: "common" },
+    { name: "golden_apple", value: 40, rarity: "uncommon" },
+    { name: "enchanted_book", value: 70, rarity: "rare" },
+    { name: "diamond_sword", value: 120, rarity: "epic" },
+    { name: "netherite_ingot", value: 300, rarity: "legendary" }
+];
+
+// Elements
+const spinner = document.getElementById("spinner");
 const resultText = document.getElementById("resultText");
-const message = document.getElementById("message");
+const diamondDisplay = document.getElementById("diamondCount");
+const chestImg = document.getElementById("chestImg");
+const spinnerSection = document.getElementById("spinnerSection");
+const chestScreen = document.getElementById("chestScreen");
+const openBtn = document.getElementById("openBtn");
 
-window.onload = function () {
-  updateDiamonds();
-};
+// Sounds
+const openSound = new Audio("textures/chest_open.mp3");
 
+// Update diamonds
 function updateDiamonds() {
-  diamondText.textContent = diamonds;
-  localStorage.setItem("diamonds", diamonds);
+    diamondDisplay.textContent = diamonds;
 }
 
-document.getElementById("homeBtn").onclick = home;
-
-function home(){
-
-if(!gameActive){
-
-window.location.href="../index.html";
-
+// Random item
+function getRandomItem() {
+    return lootPool[Math.floor(Math.random() * lootPool.length)];
 }
 
-else{
+// Build spinner
+function generateSpinnerItems(winItem) {
+    spinner.innerHTML = "";
 
-message.textContent="Finish the game first!";
+    let items = [];
 
-setTimeout(()=>message.textContent="",2000);
+    for (let i = 0; i < 50; i++) {
+        items.push(lootPool[Math.floor(Math.random() * lootPool.length)]);
+    }
 
+    let winIndex = 35;
+    items[winIndex] = winItem;
+
+    items.forEach(item => {
+        let div = document.createElement("div");
+        div.classList.add("item", item.rarity);
+
+        let img = document.createElement("img");
+        img.src = `textures/${item.name}.png`;
+
+        div.appendChild(img);
+        spinner.appendChild(div);
+    });
+
+    return winIndex;
 }
 
+// Tick sound system (CSGO style)
+const tickSound = new Audio("textures/tick.mp3");
+
+function playTicking(duration) {
+    let start = Date.now();
+
+    function tick() {
+        let elapsed = Date.now() - start;
+        let progress = elapsed / duration;
+
+        if (progress >= 1) return;
+
+        let interval = 100 + (progress * 800);
+
+        tickSound.currentTime = 0;
+        tickSound.play();
+
+        setTimeout(tick, interval);
+    }
+
+    tick();
 }
 
-const lootPools = {
+// Open chest
+function openChest() {
+    if (diamonds < 25) {
+        resultText.textContent = "Not enough diamonds!";
+        return;
+    }
 
-dungeon:[
-{item:"Rotten Flesh",value:2,chance:40},
-{item:"Bone",value:3,chance:30},
-{item:"Iron Ingot",value:10,chance:20},
-{item:"Golden Apple",value:40,chance:8},
-{item:"Enchanted Book",value:120,chance:2}
-],
+    diamonds -= 25;
+    updateDiamonds();
 
-village:[
-{item:"Bread",value:5,chance:40},
-{item:"Emerald",value:20,chance:25},
-{item:"Iron Gear",value:35,chance:20},
-{item:"Diamond",value:80,chance:10},
-{item:"Totem",value:200,chance:5}
-],
+    openSound.currentTime = 0;
+    openSound.play();
 
-end:[
-{item:"Iron",value:20,chance:50},
-{item:"Gold",value:40,chance:25},
-{item:"Diamond",value:120,chance:15},
-{item:"Elytra",value:400,chance:8},
-{item:"Netherite Scrap",value:800,chance:2}
-]
+    chestImg.classList.add("opening");
 
-};
+    setTimeout(() => {
+        chestImg.classList.remove("opening");
+        chestScreen.classList.add("hidden");
+        spinnerSection.classList.remove("hidden");
 
-const chestPrices = {
-
-dungeon:25,
-village:40,
-end:120
-
-};
-
-function getRandomItem(pool){
-
-let rand=Math.random()*100;
-let sum=0;
-
-for(let item of pool){
-
-sum+=item.chance;
-
-if(rand<=sum){
-
-return item;
-
+        startSpin();
+    }, 700);
 }
 
+// FIXED spin (IMPORTANT)
+function startSpin() {
+    let winItem = getRandomItem();
+    let winIndex = generateSpinnerItems(winItem);
+
+    let itemWidth = 120;
+    let containerWidth = 600;
+
+    let offset = (winIndex * itemWidth) - (containerWidth / 2) + (itemWidth / 2);
+
+    // RESET FIRST (THIS FIXES YOUR PROBLEM)
+    spinner.style.transition = "none";
+    spinner.style.transform = "translateX(0px)";
+
+    // FORCE BROWSER TO APPLY RESET
+    spinner.offsetHeight;
+
+    // ENABLE ANIMATION AGAIN
+    spinner.style.transition = "transform 4s cubic-bezier(0.08, 0.6, 0.1, 1)";
+
+    // Start ticking sound
+    playTicking(4000);
+
+    // START SPIN
+    spinner.style.transform = `translateX(-${offset}px)`;
+
+    setTimeout(() => {
+        diamonds += winItem.value;
+        updateDiamonds();
+
+        resultText.textContent = `You got ${winItem.name} (+${winItem.value}💎)`;
+
+        setTimeout(() => {
+            spinnerSection.classList.add("hidden");
+            chestScreen.classList.remove("hidden");
+        }, 1500);
+
+    }, 4000);
 }
 
-}
+// Event
+openBtn.addEventListener("click", openChest);
 
-function openChest(type){
-
-if(gameActive) return;
-
-const price = chestPrices[type];
-
-if(diamonds<price){
-
-resultText.textContent="Not enough diamonds!";
-return;
-
-}
-
-gameActive=true;
-
-diamonds-=price;
-
-const loot = getRandomItem(lootPools[type]);
-
-diamonds+=loot.value;
-
+// Init
 updateDiamonds();
-
-resultText.textContent="You found: "+loot.item+" (+"+loot.value+"💎)";
-
-if(loot.value>price){
-
-bigWinEffect();
-
-}
-
-gameActive=false;
-
-}
-
-function bigWinEffect(){
-
-document.body.style.background="#ffd700";
-
-setTimeout(()=>{
-
-document.body.style.background="#1e1e1e";
-
-},300);
-
-}

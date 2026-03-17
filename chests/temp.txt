@@ -1,0 +1,8 @@
+textures/
+- chest.png
+- iron_sword.png
+- iron_chestplate.png
+- golden_apple.png
+- enchanted_book.png
+- diamond_sword.png
+- netherite_ingot.png

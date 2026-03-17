@@ -2,59 +2,42 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Minecraft Chest Unboxing</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minecraft Case Opening</title>
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<h1>Minecraft Chest Unboxing</h1>
+<h1>Minecraft Case Opening</h1>
 
 <div id="topBar">
-
-<button id="homeBtn">Home</button>
-
-<div id="diamondDisplay">
-💎 Diamonds: <span id="diamondCount">0</span>
+    <button id="homeBtn">Home</button>
+    <div id="diamondDisplay">💎 Diamonds: <span id="diamondCount">200</span></div>
 </div>
 
+<!-- Chest -->
+<div id="chestScreen">
+    <img id="chestImg" src="textures/chest.png">
 </div>
 
-<hr>
-
-<div id="chests">
-
-<button onclick="openChest('dungeon')">
-Dungeon Chest (25💎)
-</button>
-
-<button onclick="openChest('village')">
-Village Chest (40💎)
-</button>
-
-<button onclick="openChest('end')">
-End City Chest (120💎)
-</button>
-
+<!-- Spinner -->
+<div id="spinnerSection" class="hidden">
+    <div id="spinnerContainer">
+        <div id="marker"></div>
+        <div id="spinner"></div>
+    </div>
 </div>
 
-<hr>
+<div id="caseSection">
+    <button id="openBtn">Open Blacksmith Chest (25💎)</button>
+</div>
 
 <div id="resultBox">
-
-<h2>Result</h2>
-
-<p id="resultText">
-Open a chest!
-</p>
-
+    <h2>Result</h2>
+    <p id="resultText">Open a chest!</p>
 </div>
 
-<p id="message"></p>
-
 <script src="script.js"></script>
-
-currently under development, check back later! (just a placeholder for now)
-
 </body>
 </html>
