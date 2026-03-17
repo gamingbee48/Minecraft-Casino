@@ -25,7 +25,7 @@ const openSound = new Audio("textures/chest_open.mp3");
 
 // Update diamonds
 function updateDiamonds() {
-    diamondDisplay.textContent = diamonds;
+    document.getElementById("diamonds").innerHTML = `<img src="textures/diamond.png" style="width:20px;"> ${diamonds}`;
     localStorage.setItem("diamonds", diamonds);
 }
 
@@ -96,6 +96,8 @@ function openChest() {
 
     openBtn.hidden = true;
     homeBtn.hidden = true;
+    resultText.hidden = true;
+    resultBox.hidden = true;
 
     openSound.currentTime = 0;
     openSound.play();
@@ -141,13 +143,15 @@ function startSpin() {
         diamonds += winItem.value;
         updateDiamonds();
 
-        resultText.textContent = `You got ${winItem.name} (+${winItem.value}💎)`;
+        resultText.textContent = `You got ${winItem.name} (+${winItem.value})`;
 
         setTimeout(() => {
             spinnerSection.classList.add("hidden");
             chestScreen.classList.remove("hidden");
             openBtn.hidden = false;
             homeBtn.hidden = false;
+            resultText.hidden = false;
+            resultBox.hidden = false;
         }, 1500);
 
     }, 4000);

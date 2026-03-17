@@ -1,5 +1,5 @@
 body {
-    font-family: sans-serif;
+    font-family: 'Minecraft', sans-serif;
     text-align: center;
     background: #2c2c2c;
     color: white;
@@ -12,11 +12,13 @@ body {
 }
 
 button {
-    padding: 10px 20px;
-    background: #4CAF50;
-    color: white;
-    border: none;
-    cursor: pointer;
+  padding: 10px 20px;
+  font-family: 'Minecraft', sans-serif;
+  background: #4CAF50;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 /* Spinner */
@@ -88,4 +90,16 @@ button {
     font-size: 18px;
     font-weight: bold;
     color: #00ffff;
+}
+
+.diamondIcon {
+    width: 20px;
+    vertical-align: bottom;
+}
+
+#homeBtn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    background: #2196F3;
 }
