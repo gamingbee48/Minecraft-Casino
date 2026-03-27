@@ -1,0 +1,440 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+* {
+    user-select: none;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    background: #0a0a0a;
+    background-image: 
+        linear-gradient(45deg, #2c2418 1px, transparent 1px),
+        linear-gradient(-45deg, #2c2418 1px, transparent 1px);
+    background-size: 40px 40px;
+    font-family: 'Press Start 2P', 'Courier New', monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    position: relative;
+}
+
+/* Home Button */
+.home-button {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: #3d2c1b;
+    border: 3px solid #ab8e54;
+    font-family: inherit;
+    font-size: 1rem;
+    padding: 12px 24px;
+    color: #ffd966;
+    cursor: pointer;
+    border-radius: 12px;
+    z-index: 100;
+    transition: all 0.2s;
+    box-shadow: 0 4px 0 #1f180e;
+}
+
+.home-button:hover {
+    transform: translateY(-2px);
+    background: #5e482a;
+    box-shadow: 0 6px 0 #1f180e;
+}
+
+.home-button:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #1f180e;
+}
+
+/* Main Game Container */
+.game-container {
+    max-width: 1400px;
+    width: 100%;
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.6);
+    border-radius: 30px;
+    border: 3px solid #5c4b2e;
+    backdrop-filter: blur(3px);
+}
+
+/* LEFT SIDE - Enchanting Table Section */
+.enchanting-section {
+    flex: 1;
+    min-width: 400px;
+    background: rgba(30, 25, 20, 0.8);
+    border-radius: 30px;
+    padding: 25px;
+    border: 3px solid #8b7355;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.5), 0 10px 20px rgba(0,0,0,0.3);
+}
+
+.enchanting-table-wrapper {
+    text-align: center;
+}
+
+.enchanting-table {
+    position: relative;
+    margin-bottom: 30px;
+}
+
+.table-graphic {
+    background: url('textures/enchanting_table.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    height: 200px;
+    width: 100%;
+    filter: drop-shadow(0 0 15px #9b6eff);
+    animation: tableGlow 2s ease-in-out infinite;
+}
+
+@keyframes tableGlow {
+    0%, 100% { filter: drop-shadow(0 0 15px #9b6eff); }
+    50% { filter: drop-shadow(0 0 25px #c88eff); }
+}
+
+.floating-particles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: #b97eff;
+    border-radius: 50%;
+    animation: floatUp 3s infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100px) scale(0);
+        opacity: 0;
+    }
+}
+
+/* Diamond Slot */
+.diamond-slot {
+    background: #1e1a12;
+    border: 3px solid #f5b042;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.5), 0 5px 0 #2a2418;
+}
+
+.slot-label {
+    font-size: 0.8rem;
+    color: #ffd966;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.diamond-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.diamond-icon {
+    width: 40px;
+    height: 40px;
+    background: url('textures/diamond.png');
+    background-size: contain;
+    filter: drop-shadow(0 0 5px #4aff9e);
+}
+
+.diamond-amount {
+    font-size: 2rem;
+    color: #55ffaa;
+    text-shadow: 2px 2px 0 #1a5a2e;
+}
+
+/* Item Slot */
+.item-slot {
+    background: #1e1a12;
+    border: 3px solid #8b7355;
+    border-radius: 20px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.item-selector {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.item-card {
+    cursor: pointer;
+    text-align: center;
+    padding: 10px;
+    border-radius: 15px;
+    transition: all 0.2s;
+    background: rgba(45, 35, 25, 0.6);
+    border: 2px solid #6b5a3e;
+}
+
+.item-card:hover {
+    transform: translateY(-3px);
+    border-color: #ffcc66;
+}
+
+.item-card.selected {
+    border: 3px solid #ffcc44;
+    background: rgba(90, 70, 40, 0.8);
+    box-shadow: 0 0 15px #ffbb33;
+}
+
+.item-img {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.item-name {
+    font-size: 0.7rem;
+    color: #f9e4b7;
+    margin-top: 5px;
+}
+
+/* Enchant Button */
+.enchant-action-btn {
+    background: linear-gradient(135deg, #4a3720, #2a1f12);
+    border: 3px solid #ffcc66;
+    font-family: inherit;
+    font-size: 1.2rem;
+    padding: 15px 30px;
+    color: #ffd966;
+    cursor: pointer;
+    border-radius: 40px;
+    width: 100%;
+    transition: all 0.1s;
+    box-shadow: 0 6px 0 #1f180e;
+}
+
+.enchant-action-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #1f180e;
+}
+
+/* RIGHT SIDE - Gambling Section */
+.gambling-section {
+    flex: 1;
+    min-width: 350px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gamble-buttons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.gamble-btn {
+    background: linear-gradient(135deg, #2c2418, #1a1510);
+    border: 3px solid #ab8e54;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 6px 0 #0f0c08;
+}
+
+.gamble-btn:hover {
+    transform: translateY(-3px);
+    border-color: #ffcc66;
+    background: linear-gradient(135deg, #3e3222, #2a1f12);
+    box-shadow: 0 8px 0 #0f0c08;
+}
+
+.gamble-btn:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #0f0c08;
+}
+
+.unreadable-text {
+    display: block;
+    font-size: 1.8rem;
+    font-family: 'Courier New', monospace;
+    color: #b89a6a;
+    text-shadow: 2px 2px 0 #4a3a28;
+    letter-spacing: 4px;
+    margin-bottom: 10px;
+}
+
+.cost {
+    display: inline-block;
+    font-size: 1rem;
+    color: #ffd966;
+    background: rgba(0,0,0,0.5);
+    padding: 5px 15px;
+    border-radius: 20px;
+    margin-right: 10px;
+}
+
+.chance {
+    display: inline-block;
+    font-size: 0.9rem;
+    color: #7eff6e;
+    background: rgba(0,0,0,0.5);
+    padding: 5px 15px;
+    border-radius: 20px;
+}
+
+/* Result Panel */
+.result-panel {
+    background: #0f0d09cc;
+    border-radius: 20px;
+    padding: 20px;
+    border: 2px solid #ab8e54;
+}
+
+.result-message {
+    font-size: 0.8rem;
+    padding: 12px;
+    border-radius: 15px;
+    text-align: center;
+    word-break: break-word;
+    transition: all 0.2s;
+}
+
+/* History Panel */
+.history-panel {
+    background: #0f0d09cc;
+    border-radius: 20px;
+    padding: 15px;
+    border: 2px solid #ab8e54;
+}
+
+.history-title {
+    font-size: 0.8rem;
+    color: #ffd966;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.history-list {
+    max-height: 200px;
+    overflow-y: auto;
+    list-style: none;
+}
+
+.history-list li {
+    background: #211d15;
+    margin: 8px 0;
+    padding: 8px;
+    border-left: 4px solid #ffcc44;
+    font-size: 0.65rem;
+    color: #e4d5b0;
+    border-radius: 8px;
+}
+
+/* Particle Canvas */
+.particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+
+/* Floating XP Orbs */
+.xp-float {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.3rem;
+    font-weight: bold;
+    z-index: 2000;
+    animation: floatUpOrb 1s ease-out forwards;
+}
+
+@keyframes floatUpOrb {
+    0% {
+        opacity: 1;
+        transform: translateY(0px) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.2);
+    }
+}
+
+/* Glow Effects */
+.glow-success {
+    animation: successPulse 0.5s ease-out;
+}
+
+@keyframes successPulse {
+    0% { text-shadow: 0 0 0px #00ff00; }
+    50% { text-shadow: 0 0 20px #00ff00; }
+    100% { text-shadow: 0 0 0px #00ff00; }
+}
+
+.glow-fail {
+    animation: failPulse 0.5s ease-out;
+}
+
+@keyframes failPulse {
+    0% { text-shadow: 0 0 0px #ff0000; }
+    50% { text-shadow: 0 0 15px #ff0000; }
+    100% { text-shadow: 0 0 0px #ff0000; }
+}
+
+/* Rarity Colors */
+.glow-common { color: #95a5a6; text-shadow: 0 0 5px #bdc3c7; }
+.glow-rare { color: #2ecc71; text-shadow: 0 0 8px #2ecc71; }
+.glow-epic { color: #9b59b6; text-shadow: 0 0 10px #aa6eff; }
+.glow-legendary { color: #f1c40f; text-shadow: 0 0 12px #ffcc44; }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .game-container {
+        flex-direction: column;
+    }
+    
+    .enchanting-section {
+        min-width: auto;
+    }
+    
+    .gambling-section {
+        min-width: auto;
+    }
+    
+    .unreadable-text {
+        font-size: 1.2rem;
+    }
+    
+    .home-button {
+        font-size: 0.7rem;
+        padding: 8px 16px;
+    }
+}

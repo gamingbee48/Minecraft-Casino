@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Minecraft Enchantment Gambler | Risk Edition</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Home Button -->
+    <button id="homeBtn" class="home-button">🏠 HOME</button>
+    
+    <div class="game-container">
+        <!-- LEFT SIDE: Enchanting Table Area -->
+        <div class="enchanting-section">
+            <div class="enchanting-table-wrapper">
+                <div class="enchanting-table">
+                    <div class="table-graphic"></div>
+                    <div class="floating-particles" id="floatingParticles"></div>
+                </div>
+                
+                <!-- Diamond Slot Display -->
+                <div class="diamond-slot">
+                    <div class="slot-label">DIAMOND SLOT</div>
+                    <div class="diamond-display">
+                        <div class="diamond-icon"></div>
+                        <span id="diamondBalance" class="diamond-amount">500</span>
+                    </div>
+                </div>
+                
+                <!-- Item Slot -->
+                <div class="item-slot">
+                    <div class="slot-label">ITEM SLOT</div>
+                    <div class="item-selector">
+                        <div class="item-card" data-item="sword">
+                            <div class="item-img" style="background-image: url('textures/diamond_sword.png');"></div>
+                            <div class="item-name">Sword</div>
+                        </div>
+                        <div class="item-card" data-item="pickaxe">
+                            <div class="item-img" style="background-image: url('textures/diamond_pickaxe.png');"></div>
+                            <div class="item-name">Pickaxe</div>
+                        </div>
+                        <div class="item-card" data-item="bow">
+                            <div class="item-img" style="background-image: url('textures/bow.png');"></div>
+                            <div class="item-name">Bow</div>
+                        </div>
+                        <div class="item-card" data-item="chestplate">
+                            <div class="item-img" style="background-image: url('textures/diamond_chestplate.png');"></div>
+                            <div class="item-name">Chestplate</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Enchant Button -->
+                <button id="enchantBtn" class="enchant-action-btn">✨ ENCHANT ✨</button>
+            </div>
+        </div>
+        
+        <!-- RIGHT SIDE: Gambling Buttons -->
+        <div class="gambling-section">
+            <div class="gamble-buttons-container">
+                <button class="gamble-btn" data-cost="10" data-multiplier="2">
+                    <span class="unreadable-text">ᚠᚢᚦᚨᚱᚲ</span>
+                    <span class="cost">10 💎</span>
+                    <span class="chance">2x</span>
+                </button>
+                
+                <button class="gamble-btn" data-cost="100" data-multiplier="5">
+                    <span class="unreadable-text">ᚷᚹᛁᛞᛟᚱ</span>
+                    <span class="cost">100 💎</span>
+                    <span class="chance">5x</span>
+                </button>
+                
+                <button class="gamble-btn" data-cost="1000" data-multiplier="15">
+                    <span class="unreadable-text">ᚦᚨᚢᚱᛗᚨᚾ</span>
+                    <span class="cost">1000 💎</span>
+                    <span class="chance">15x</span>
+                </button>
+            </div>
+            
+            <!-- Result Display -->
+            <div class="result-panel">
+                <div id="resultMessage" class="result-message">✨ Click a gamble button to risk your diamonds! ✨</div>
+            </div>
+            
+            <!-- History Panel -->
+            <div class="history-panel">
+                <div class="history-title">📜 ENCHANTMENT HISTORY</div>
+                <ul id="historyList" class="history-list"></ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Particle Canvas for Effects -->
+    <canvas id="particleCanvas" class="particle-canvas"></canvas>
+    
+    <script src="script.js"></script>
+</body>
+</html>

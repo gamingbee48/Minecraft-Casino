@@ -24,6 +24,10 @@ function openSlots() {
   window.location.href = "./slots/index.html";
 }
 
+function openEnchanting() {
+  window.location.href = "./enchanting/index.html";
+}
+
 // Load saved diamonds when the page starts
 window.onload = function () {
 
