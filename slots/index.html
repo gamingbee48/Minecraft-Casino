@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Slot Machine</title>
+    <title>Minecraft 5x3 Slot Machine - Jackpot Edition</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.cdnfonts.com/css/minecraft-3" rel="stylesheet">
 </head>
@@ -11,41 +11,99 @@
     <div id="topBar">
         <button id="homeBtn">Home</button>
         <div id="diamonds">
-            <img src="textures/diamond.png" class="diamondIcon"> 100
+            <img src="textures/diamond.png" class="diamondIcon"> 1000
         </div>
     </div>
 
-    <h1>Minecraft Slot Machine</h1>
+    <h1>Minecraft 5x3 Slot Machine</h1>
+    <h2>10 Fixed Paylines</h2>
+
+    <!-- Jackpot Display -->
+    <div id="jackpotSection">
+        <div class="jackpot-container">
+            <div class="jackpot-item mini">
+                <span class="jackpot-label">MINI JACKPOT</span>
+                <span class="jackpot-amount" id="miniJackpot">500</span>
+                <img src="textures/diamond.png" class="diamondIcon">
+            </div>
+            <div class="jackpot-item major">
+                <span class="jackpot-label">MAJOR JACKPOT</span>
+                <span class="jackpot-amount" id="majorJackpot">2500</span>
+                <img src="textures/diamond.png" class="diamondIcon">
+            </div>
+            <div class="jackpot-item grand">
+                <span class="jackpot-label">GRAND JACKPOT</span>
+                <span class="jackpot-amount" id="grandJackpot">10000</span>
+                <img src="textures/diamond.png" class="diamondIcon">
+            </div>
+        </div>
+    </div>
 
     <!-- Slot Machine Main Display -->
     <div id="slotMachine">
         <div id="slotContainer">
             <div id="slotWindow">
+                <!-- 5 Reels, each with 3 rows -->
                 <div id="reel1" class="reel"></div>
                 <div id="reel2" class="reel"></div>
                 <div id="reel3" class="reel"></div>
+                <div id="reel4" class="reel"></div>
+                <div id="reel5" class="reel"></div>
             </div>
+            
+            <!-- 10 Payline Markers -->
+            <div class="payline payline-1"></div>
+            <div class="payline payline-2"></div>
+            <div class="payline payline-3"></div>
+            <div class="payline payline-4"></div>
+            <div class="payline payline-5"></div>
+            <div class="payline payline-6"></div>
+            <div class="payline payline-7"></div>
+            <div class="payline payline-8"></div>
+            <div class="payline payline-9"></div>
+            <div class="payline payline-10"></div>
+            
+            <!-- Center Marker -->
             <div id="slotMarker"></div>
         </div>
-        
-        <!-- Payline indicator -->
-        <div id="payline"></div>
     </div>
 
     <!-- Controls -->
     <div id="controls">
         <div id="betSection">
+            <span>Total Bet:</span>
             <button id="decreaseBet">-</button>
-            <span id="betAmount">5</span>
+            <span id="betAmount">10</span>
             <button id="increaseBet">+</button>
+            <img src="textures/diamond.png" class="diamondIcon">
+        </div>
+        
+        <div id="totalBetDisplay">
+            Total Bet: <span id="totalBet">10</span> <img src="textures/diamond.png" class="diamondIcon">
         </div>
         
         <button id="spinBtn" class="spin-button">
             <span>SPIN</span>
-            <span id="spinCost">(<img src="textures/diamond.png" class="diamondIcon"> 5)</span>
+        </button>
+        
+        <button id="autoSpinBtn" class="auto-spin-button">
+            <span>AUTO SPIN</span>
+        </button>
+        
+        <button id="stopAutoBtn" class="stop-auto-button hidden">
+            <span>STOP</span>
         </button>
         
         <button id="maxBetBtn">MAX BET</button>
+    </div>
+
+    <!-- Auto Spin Settings -->
+    <div id="autoSpinSettings" class="hidden">
+        <span>Auto Spin Count:</span>
+        <button id="autoSpinMinus">-</button>
+        <span id="autoSpinCount">10</span>
+        <button id="autoSpinPlus">+</button>
+        <span>spins</span>
     </div>
 
     <!-- Result Display -->
@@ -56,54 +114,72 @@
             <span id="winAmount">0</span>
             <img src="textures/diamond.png" class="diamondIcon">
         </div>
+        <div id="winLines"></div>
+        <div id="jackpotWin" class="hidden jackpot-win">
+            🎰 JACKPOT WIN! 🎰
+        </div>
     </div>
 
     <!-- Paytable -->
     <div id="paytable">
-        <h3>Payouts</h3>
-        <div class="paytable-row">
-            <div class="paytable-item">
+        <h3>Payouts (Multiplier x Total Bet)</h3>
+        <div class="paytable-grid">
+            <div class="paytable-item legendary">
                 <img src="textures/netherite_ingot.png" class="paytable-icon">
-                <span>3x = 300</span>
+                <span>Netherite Ingot: 3x=60x | 4x=120x | 5x=300x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item epic">
                 <img src="textures/diamond_sword.png" class="paytable-icon">
-                <span>3x = 120</span>
+                <span>Diamond Sword: 3x=25x | 4x=50x | 5x=120x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item rare">
                 <img src="textures/enchanted_book.png" class="paytable-icon">
-                <span>3x = 100</span>
+                <span>Enchanted Book: 3x=20x | 4x=40x | 5x=100x</span>
             </div>
-        </div>
-        <div class="paytable-row">
-            <div class="paytable-item">
+            <div class="paytable-item uncommon">
                 <img src="textures/golden_apple.png" class="paytable-icon">
-                <span>3x = 50</span>
+                <span>Golden Apple: 3x=10x | 4x=20x | 5x=50x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item common">
                 <img src="textures/iron_chestplate.png" class="paytable-icon">
-                <span>3x = 15</span>
+                <span>Iron Chestplate: 3x=3x | 4x=6x | 5x=15x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item common">
                 <img src="textures/iron_sword.png" class="paytable-icon">
-                <span>3x = 10</span>
+                <span>Iron Sword: 3x=2x | 4x=4x | 5x=10x</span>
             </div>
-        </div>
-        <div class="paytable-row">
-            <div class="paytable-item">
+            <div class="paytable-item common">
                 <img src="textures/apple.png" class="paytable-icon">
-                <span>3x = 5</span>
+                <span>Apple: 3x=1x | 4x=2x | 5x=5x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item common">
                 <img src="textures/iron_nugget.png" class="paytable-icon">
-                <span>3x = 3</span>
+                <span>Iron Nugget: 3x=1x | 4x=2x | 5x=5x</span>
             </div>
-            <div class="paytable-item">
+            <div class="paytable-item common">
                 <img src="textures/stick.png" class="paytable-icon">
-                <span>3x = 1</span>
+                <span>Stick: 3x=1x | 4x=2x | 5x=5x</span>
             </div>
         </div>
-        <p class="paytable-note">Any 2 matching = 2x bet | Any match = 1x bet</p>
+        <p class="paytable-note">🎰 JACKPOTS: 5x Netherite Ingot = MINI | 5x Diamond Sword = MAJOR | 5x Enchanted Book = GRAND 🎰</p>
+    </div>
+
+    <!-- Payline Info - Moved to Bottom -->
+    <div id="paylineInfo">
+        <h3>📊 10 Fixed Paylines (Always Active) 📊</h3>
+        <div class="payline-grid">
+            <div class="payline-demo"><span class="line-badge">Line 1</span> <span class="line-pattern">Top Row ─────</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 2</span> <span class="line-pattern">Middle Row ─────</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 3</span> <span class="line-pattern">Bottom Row ─────</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 4</span> <span class="line-pattern">V Shape ╲╲╲╲╲</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 5</span> <span class="line-pattern">V Shape ╱╱╱╱╱</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 6</span> <span class="line-pattern">Zigzag ╲╱╲╱╲</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 7</span> <span class="line-pattern">Zigzag ╱╲╱╲╱</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 8</span> <span class="line-pattern">Pattern ╲╲─╱╱</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 9</span> <span class="line-pattern">Pattern ╱╱─╲╲</span></div>
+            <div class="payline-demo"><span class="line-badge">Line 10</span> <span class="line-pattern">Pyramid ─╲─╱─</span></div>
+        </div>
+        <p class="payline-note">💎 Wins pay from LEFT to RIGHT only! All 10 paylines are always active. 💎</p>
     </div>
 
     <script src="script.js"></script>
