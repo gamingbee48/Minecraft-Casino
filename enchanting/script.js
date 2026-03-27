@@ -179,7 +179,7 @@ function getRandomRarity() {
 
 function updateBalanceUI() {
     balanceSpan.innerText = Math.floor(diamondBalance);
-    localStorage.setItem("mcDiamondBalance", diamondBalance);
+    localStorage.setItem("diamonds", diamondBalance);
 }
 
 function addHistoryEntry(text, isSuccess) {
@@ -199,9 +199,12 @@ function renderHistory() {
 }
 
 function loadGame() {
-    const saved = localStorage.getItem("mcDiamondBalance");
+    // Changed: Use "diamonds" instead of "mcDiamondBalance"
+    const saved = localStorage.getItem("diamonds");
     if (saved !== null && !isNaN(parseInt(saved))) {
         diamondBalance = parseInt(saved);
+    } else {
+        diamondBalance = 1000; // Default to 1000 if no saved value
     }
     updateBalanceUI();
 }

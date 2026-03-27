@@ -28,6 +28,10 @@ function openEnchanting() {
   window.location.href = "./enchanting/index.html";
 }
 
+function openFishing() {
+  window.location.href = "./fishing/index.html";
+}
+
 // Load saved diamonds when the page starts
 window.onload = function () {
 

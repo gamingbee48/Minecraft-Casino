@@ -1,0 +1,281 @@
+* {
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(145deg, #1a472a 0%, #0e2a1a 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Courier New', 'Press Start 2P', 'Minecraft', monospace;
+    padding: 20px;
+}
+
+/* Pixelated container */
+.game-container {
+    background: #2d2a1e;
+    border-radius: 24px;
+    padding: 16px;
+    box-shadow: 0 12px 0 #1e1b12, inset 0 1px 0 #5e5a42;
+    border: 2px solid #6b5a3a;
+}
+
+.minecraft-panel {
+    background: #8b8b5c;
+    background-image: repeating-linear-gradient(45deg, #7c7c4e 0px, #7c7c4e 2px, #9e9e6e 2px, #9e9e6e 6px);
+    border-radius: 12px;
+    padding: 12px;
+    box-shadow: inset 0 0 0 2px #c6c68e, 0 4px 0 #4a3a1e;
+}
+
+canvas {
+    display: block;
+    margin: 0 auto;
+    border-radius: 16px;
+    cursor: pointer;
+    box-shadow: 0 6px 0 #2a2418;
+    width: 100%;
+    height: auto;
+    max-width: 800px;
+    aspect-ratio: 800 / 450;
+}
+
+/* Stats Bar */
+.stats-bar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin: 12px 0;
+    font-weight: bold;
+    text-shadow: 2px 2px 0 #1e1b12;
+    color: #ffefb0;
+}
+
+.stat-card {
+    background: #2c2a1e;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    box-shadow: inset 0 1px 0 #5e5a3e, 0 2px 0 #0a0a05;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stat-icon {
+    font-size: 18px;
+}
+
+/* Controls Row */
+.controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.bet-area {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #1e2b1a;
+    padding: 6px 16px;
+    border-radius: 48px;
+    background: #2c2a1e;
+}
+
+.bet-label {
+    font-weight: bold;
+    color: #ffefb0;
+}
+
+.bet-value {
+    min-width: 60px;
+    text-align: center;
+    background: #3a351e;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+    color: #ffd966;
+}
+
+.weather-time {
+    display: flex;
+    gap: 12px;
+    background: #2c2a1e;
+    padding: 6px 16px;
+    border-radius: 48px;
+}
+
+.weather-icon, .time-icon {
+    font-size: 26px;
+    filter: drop-shadow(2px 2px 0px #1e1b12);
+}
+
+.durability-area {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    background: #2c2a1e;
+    padding: 6px 16px;
+    border-radius: 48px;
+    color: #ffefb0;
+    font-size: 14px;
+}
+
+.rod-durability {
+    background: #3a2c1a;
+    border-radius: 12px;
+    height: 12px;
+    width: 140px;
+    overflow: hidden;
+}
+
+.durability-fill {
+    width: 100%;
+    height: 100%;
+    background: #5a9e4e;
+    transition: width 0.2s;
+}
+
+/* Power Bar */
+.power-bar-container {
+    margin: 8px 0;
+}
+
+.power-bar {
+    background: #413a28;
+    height: 18px;
+    width: 100%;
+    border-radius: 30px;
+    overflow: hidden;
+}
+
+.power-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ffb347, #ff8c00);
+    transition: width 0.02s linear;
+    box-shadow: inset 0 1px 2px #ffdd88;
+}
+
+/* Buttons */
+button {
+    background: #5c5c3e;
+    border: none;
+    font-family: inherit;
+    font-weight: bold;
+    padding: 8px 16px;
+    border-radius: 32px;
+    color: #f9eec1;
+    text-shadow: 1px 1px 0 #2f2a18;
+    box-shadow: 0 3px 0 #2a2414;
+    cursor: pointer;
+    transition: 0.05s linear;
+}
+
+button:active {
+    transform: translateY(2px);
+    box-shadow: 0 1px 0 #2a2414;
+}
+
+.btn-small {
+    padding: 4px 12px;
+    font-size: 16px;
+    min-width: 36px;
+}
+
+.btn-primary {
+    background: #6b5a3e;
+    padding: 8px 20px;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.instruction {
+    font-size: 11px;
+    text-align: center;
+    margin-top: 10px;
+    color: #cbbd7a;
+    background: #2c2a1e;
+    padding: 6px;
+    border-radius: 20px;
+}
+
+/* Toast Message */
+.toast-msg {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000000aa;
+    backdrop-filter: blur(8px);
+    color: #ffd966;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-weight: bold;
+    pointer-events: none;
+    z-index: 100;
+    font-size: 18px;
+    font-family: monospace;
+    animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateX(-50%) translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+    .stats-bar {
+        gap: 8px;
+    }
+    
+    .stat-card {
+        font-size: 11px;
+        padding: 4px 8px;
+    }
+    
+    .bet-area, .weather-time, .durability-area {
+        padding: 4px 12px;
+    }
+    
+    .bet-value {
+        min-width: 45px;
+        font-size: 14px;
+    }
+    
+    .instruction {
+        font-size: 9px;
+    }
+}
+
+@media (max-width: 550px) {
+    .controls-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .bet-area, .weather-time, .durability-area {
+        justify-content: center;
+    }
+}
