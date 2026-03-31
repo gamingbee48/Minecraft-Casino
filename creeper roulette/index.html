@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Creeper Roulette - Minecraft Gambling Game</title>
+  <style>
+    * {
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(145deg, #1a3a1a 0%, #0e2a0e 100%);
+      font-family: 'Courier New', 'VT323', monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* main game container */
+    .game-container {
+      background: #3b2a1f;
+      background-image: repeating-linear-gradient(0deg, #5c3e1f 1px, #2c1a0c 2px, #3b2a1f 3px);
+      border-radius: 32px;
+      padding: 25px 30px 30px;
+      box-shadow: 0 20px 0 #1f1408, inset 0 1px 4px rgba(255,255,200,0.3);
+      border: 4px solid #8b6946;
+    }
+
+    /* pixelated header */
+    .minecraft-header {
+      text-align: center;
+      margin-bottom: 20px;
+      background: #2c1e10;
+      padding: 10px;
+      border-radius: 20px;
+      font-weight: bold;
+      color: #ffd966;
+      text-shadow: 3px 3px 0 #5a3e1a;
+      letter-spacing: 2px;
+      font-size: 28px;
+      font-family: 'Courier New', monospace;
+    }
+
+    /* balance + bet area */
+    .info-panel {
+      background: #1f2a0e;
+      border: 4px solid #6b4c2c;
+      border-radius: 24px;
+      padding: 12px 20px;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      color: #f9e2a1;
+      font-weight: bold;
+      text-shadow: 1px 1px 0 #2a4110;
+    }
+
+    .diamond-balance {
+      background: #2b2f1c;
+      padding: 6px 14px;
+      border-radius: 40px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 24px;
+    }
+
+    .diamond-balance span:first-child {
+      font-size: 28px;
+    }
+
+    .bet-selector {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .bet-btn {
+      background: #4d3a24;
+      border: none;
+      font-family: monospace;
+      font-weight: bold;
+      color: #ffd966;
+      padding: 6px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 16px;
+      box-shadow: inset 0 -2px 0 #2c1a0c, 0 2px 4px black;
+      transition: 0.05s linear;
+    }
+
+    .bet-btn.active {
+      background: #ffaa2b;
+      color: #2c1a0c;
+      box-shadow: inset 0 2px 2px rgba(0,0,0,0.3);
+    }
+
+    /* chest grid 2x3 */
+    .chest-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 25px;
+      justify-items: center;
+      align-items: center;
+    }
+
+    .chest {
+      width: 110px;
+      height: 110px;
+      background: #8b5a2b;
+      background-image: radial-gradient(circle at 30% 35%, #b87c3a 2px, transparent 2px);
+      background-size: 12px 12px;
+      border-radius: 20px;
+      cursor: pointer;
+      position: relative;
+      transition: 0.1s linear;
+      box-shadow: 0 8px 0 #4a2a12;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      image-rendering: pixelated;
+      background-blend-mode: overlay;
+      border: 3px solid #e5b85b;
+    }
+
+    /* pixel chest emoji fallback + texture style */
+    .chest:before {
+      content: "🧰";
+      font-size: 58px;
+      filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.5));
+    }
+
+    .chest.opened:before {
+      content: "📦";
+    }
+
+    .chest.opened.safe-item:before {
+      content: "💎";
+    }
+
+    /* dynamic per chest item icons after open */
+    .chest[data-item="diamond"]:after {
+      content: "💎";
+      font-size: 38px;
+      position: absolute;
+      bottom: -5px;
+      right: 5px;
+    }
+    .chest[data-item="gold"]:after {
+      content: "🪙";
+      font-size: 38px;
+    }
+    .chest[data-item="emerald"]:after {
+      content: "💚";
+      font-size: 38px;
+    }
+
+    .chest.creeper-hit {
+      background: #1f3b1a;
+      animation: shakeScreen 0.2s infinite;
+    }
+
+    .glow {
+      box-shadow: 0 0 0 4px #ffdd77, 0 0 0 8px #ffaa33, 0 8px 0 #4a2a12;
+      transition: 0.05s;
+    }
+
+    .chest:hover:not(.opened) {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 0 #4a2a12;
+    }
+
+    /* fuse animation on creeper chest (visual warning) */
+    .chest.fuse-burning:before {
+      content: "🧨";
+      filter: drop-shadow(0 0 4px orange);
+      animation: flicker 0.2s infinite alternate;
+    }
+    @keyframes flicker {
+      0% { text-shadow: 0 0 0px red; opacity: 1;}
+      100% { text-shadow: 0 0 6px red; opacity: 0.9;}
+    }
+
+    /* action buttons */
+    .action-bar {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+
+    .minecraft-btn {
+      background: #5f7540;
+      border: none;
+      font-weight: bold;
+      font-size: 24px;
+      font-family: monospace;
+      padding: 8px 20px;
+      border-radius: 18px;
+      color: #f9f3cf;
+      text-shadow: 2px 2px 0 #2f4d2d;
+      cursor: pointer;
+      transition: 0.05s linear;
+      box-shadow: 0 5px 0 #2b4623;
+      flex: 1;
+      text-align: center;
+    }
+
+    .minecraft-btn:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 #2b4623;
+    }
+
+    /* stats & tension */
+    .stats-row {
+      background: #1f2816;
+      border-radius: 20px;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #c9b16b;
+      margin-bottom: 15px;
+    }
+
+    .tension-meter {
+      background: #2c1a0c;
+      border-radius: 20px;
+      height: 18px;
+      width: 100%;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+
+    .tension-fill {
+      width: 0%;
+      height: 100%;
+      background: #f57c00;
+      transition: width 0.2s;
+      box-shadow: inset 0 1px 3px #ffb347;
+    }
+
+    .multiplier-card {
+      background: #01010170;
+      backdrop-filter: blur(4px);
+      padding: 4px 10px;
+      border-radius: 28px;
+      font-size: 20px;
+    }
+
+    /* screen shake animation */
+    @keyframes shakeCreeper {
+      0% { transform: translate(1px, 1px) rotate(0deg); }
+      10% { transform: translate(-1px, -2px) rotate(-1deg); }
+      20% { transform: translate(-2px, 0px) rotate(1deg); }
+      30% { transform: translate(2px, 2px) rotate(0deg); }
+      40% { transform: translate(1px, -1px) rotate(1deg); }
+      100% { transform: translate(0,0) rotate(0); }
+    }
+
+    .shake-global {
+      animation: shakeCreeper 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+    }
+
+    /* explosion particles canvas */
+    #particle-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 650px) {
+      .chest { width: 80px; height: 80px; }
+      .chest:before { font-size: 44px; }
+      .minecraft-btn { font-size: 18px; }
+    }
+  </style>
+</head>
+<body>
+<div class="game-container">
+  <div class="minecraft-header">💥 CREEPER ROULETTE 💥</div>
+
+  <div class="info-panel">
+    <div class="diamond-balance">
+      <span>💎</span> <span id="diamondBalance">1000</span>
+    </div>
+    <div class="bet-selector" id="betSelector">
+      <button data-bet="10" class="bet-btn">10💰</button>
+      <button data-bet="25" class="bet-btn">25💰</button>
+      <button data-bet="50" class="bet-btn">50💰</button>
+      <button data-bet="100" class="bet-btn active">100💰</button>
+      <button data-bet="250" class="bet-btn">250💰</button>
+      <button data-bet="500" class="bet-btn">500💰</button>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <span>🎮 Games: <span id="statGames">0</span></span>
+    <span>💀 Creepers: <span id="statCreepers">0</span></span>
+    <span>🏆 Jackpots: <span id="statJackpots">0</span></span>
+    <span>💰 Total Won: <span id="statWinnings">0</span></span>
+    <span>🏅 High Score: <span id="highScore">0</span></span>
+  </div>
+
+  <div class="multiplier-card" style="display: flex; justify-content: space-between;">
+    <span>🔥 Current Multiplier: <strong id="multiplierValue">1.0x</strong></span>
+    <span>💎 Potential Win: <strong id="potentialWin">0</strong> 💎</span>
+  </div>
+  <div class="tension-meter">
+    <div class="tension-fill" id="tensionFill"></div>
+  </div>
+
+  <div class="chest-grid" id="chestGrid">
+    <!-- 6 chests will be injected -->
+  </div>
+
+  <div class="action-bar">
+    <button id="cashOutBtn" class="minecraft-btn">💰 CASH OUT 💰</button>
+    <button id="resetRoundBtn" class="minecraft-btn">🔄 NEW ROUND</button>
+  </div>
+  <div style="font-size: 12px; text-align: center; margin-top: 12px; color:#ddb56b;">⚠️ Click chests, avoid creeper! Cash out before boom!</div>
+</div>
+<canvas id="particle-canvas"></canvas>
+
+<script>
+  // ----------------------------- SOUNDS (Web Audio Synthesis + fallback beep) -----------------------
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+  function playBeep(type, vol = 0.3) {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    gain.gain.value = vol;
+    if (type === 'chest') {
+      osc.frequency.value = 523.25;
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      osc.start();
+      osc.stop(now + 0.25);
+    } else if (type === 'hiss') {
+      osc.frequency.value = 220;
+      gain.gain.value = 0.5;
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.6);
+      osc.start();
+      osc.stop(now + 0.5);
+    } else if (type === 'explode') {
+      const noise = audioCtx.createBufferSource();
+      const bufferSize = audioCtx.sampleRate * 0.6;
+      const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+      noise.buffer = buffer;
+      const noiseGain = audioCtx.createGain();
+      noise.connect(noiseGain);
+      noiseGain.connect(audioCtx.destination);
+      noiseGain.gain.setValueAtTime(0.6, now);
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.5);
+      noise.start();
+      osc.frequency.value = 80;
+      osc.connect(gain);
+      gain.gain.setValueAtTime(0.4, now);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+      osc.start();
+      osc.stop(now + 0.4);
+    } else if (type === 'fanfare') {
+      const notes = [523.25, 659.25, 783.99];
+      notes.forEach((f, i) => {
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.connect(g);
+        g.connect(audioCtx.destination);
+        g.gain.setValueAtTime(0.2, now + i * 0.12);
+        g.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.12 + 0.5);
+        o.frequency.value = f;
+        o.start(now + i * 0.12);
+        o.stop(now + i * 0.12 + 0.4);
+      });
+    }
+  }
+
+  function playChestOpen() { playBeep('chest', 0.25); }
+  function playCreeperHiss() { playBeep('hiss', 0.4); }
+  function playExplosion() { playBeep('explode', 0.5); }
+  function playCashoutFanfare() { playBeep('fanfare', 0.3); }
+
+  // ----------------------------- GAME STATE ---------------------------------
+  let balance = 1000;
+  let currentBet = 100;
+  let currentMultiplier = 1.0;
+  let chestsOpenedSafe = 0;
+  let creeperIndex = -1;
+  let gameActive = true;     // round active? false after loss or cash out (until reset)
+  let chestsRevealed = new Array(6).fill(false);
+  let chestItems = new Array(6).fill(null); // 'diamond', 'gold', 'emerald' or 'creeper'
+
+  // Stats
+  let stats = {
+    gamesPlayed: 0,
+    creepersFound: 0,
+    jackpotsWon: 0,
+    totalWinnings: 0,
+    highScore: 0
+  };
+
+  // DOM elements
+  const chestGrid = document.getElementById('chestGrid');
+  const diamondSpan = document.getElementById('diamondBalance');
+  const multiplierSpan = document.getElementById('multiplierValue');
+  const potentialSpan = document.getElementById('potentialWin');
+  const tensionFill = document.getElementById('tensionFill');
+  const statGamesSpan = document.getElementById('statGames');
+  const statCreepersSpan = document.getElementById('statCreepers');
+  const statJackpotsSpan = document.getElementById('statJackpots');
+  const statWinningsSpan = document.getElementById('statWinnings');
+  const highScoreSpan = document.getElementById('highScore');
+
+  function updateUI() {
+    diamondSpan.innerText = Math.floor(balance);
+    let mult = 1.0;
+    if (chestsOpenedSafe === 1) mult = 1.2;
+    else if (chestsOpenedSafe === 2) mult = 1.5;
+    else if (chestsOpenedSafe === 3) mult = 2;
+    else if (chestsOpenedSafe === 4) mult = 3;
+    else if (chestsOpenedSafe === 5) mult = 5;
+    else if (chestsOpenedSafe === 6) mult = 10;
+    currentMultiplier = mult;
+    multiplierSpan.innerText = currentMultiplier.toFixed(1) + 'x';
+    const potential = Math.floor(currentBet * currentMultiplier);
+    potentialSpan.innerText = potential;
+    const tensionPercent = (chestsOpenedSafe / 6) * 100;
+    tensionFill.style.width = tensionPercent + '%';
+    if (chestsOpenedSafe > stats.highScore) {
+      stats.highScore = chestsOpenedSafe;
+      highScoreSpan.innerText = stats.highScore;
+      saveStats();
+    }
+  }
+
+  function saveBalance() { localStorage.setItem('creeperBalance', balance); }
+  function loadBalance() { const b = localStorage.getItem('creeperBalance'); if(b && !isNaN(b)) balance = Math.max(10, parseInt(b)); else balance = 1000; updateUI();}
+  function saveStats() {
+    localStorage.setItem('creeperStats', JSON.stringify(stats));
+    statGamesSpan.innerText = stats.gamesPlayed;
+    statCreepersSpan.innerText = stats.creepersFound;
+    statJackpotsSpan.innerText = stats.jackpotsWon;
+    statWinningsSpan.innerText = Math.floor(stats.totalWinnings);
+    highScoreSpan.innerText = stats.highScore;
+  }
+  function loadStats() {
+    const s = localStorage.getItem('creeperStats');
+    if(s) {
+      try {
+        const parsed = JSON.parse(s);
+        stats = {...stats, ...parsed};
+      } catch(e) {}
+    }
+    saveStats();
+  }
+
+  // particle explosion effect
+  const canvas = document.getElementById('particle-canvas');
+  let ctx = canvas.getContext('2d');
+  let particles = [];
+  function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resizeCanvas);
+  function explosionEffect(x, y) {
+    resizeCanvas();
+    for(let i=0;i<40;i++) {
+      particles.push({
+        x: x, y: y, vx: (Math.random() - 0.5)*8, vy: (Math.random() - 0.5)*8 - 3,
+        life: 1, size: 4+Math.random()*6, color: `hsl(${Math.random()*40 + 20}, 80%, 55%)`
+      });
+    }
+    function animateParticles() {
+      if(particles.length===0) return;
+      ctx.clearRect(0,0,canvas.width,canvas.height);
+      for(let i=0;i<particles.length;i++) {
+        let p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.2;
+        p.life -= 0.02;
+        if(p.life<=0) { particles.splice(i,1); i--; continue; }
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x- p.size/2, p.y- p.size/2, p.size, p.size);
+      }
+      requestAnimationFrame(animateParticles);
+    }
+    if(particles.length) animateParticles();
+  }
+
+  function screenShake() {
+    document.body.classList.add('shake-global');
+    setTimeout(() => document.body.classList.remove('shake-global'), 400);
+  }
+
+  async function creeperLose(chestElement, idx) {
+    if(!gameActive) return;
+    gameActive = false;
+    playCreeperHiss();
+    setTimeout(() => { playExplosion(); screenShake(); explosionEffect(window.innerWidth/2, window.innerHeight/2); }, 150);
+    chestElement.classList.add('creeper-hit');
+    chestElement.style.background = '#2f1f0e';
+    // set creeper face emoji
+    chestElement.innerHTML = ''; chestElement.style.fontSize='70px'; chestElement.style.display='flex';
+    chestElement.innerText = '💀💥';
+    stats.creepersFound++;
+    stats.gamesPlayed++;
+    // loss: no payout
+    stats.totalWinnings += 0; // no win, lose bet amount (already subtract bet before round)
+    saveStats();
+    updateUI();
+    disableChests(true);
+    setTimeout(() => { resetRound(false); }, 1500);
+  }
+
+  async function openChest(index) {
+    if(!gameActive) return;
+    if(chestsRevealed[index]) return;
+    const chestDiv = document.querySelector(`.chest[data-idx='${index}']`);
+    if(!chestDiv) return;
+    if(chestItems[index] === 'creeper') {
+      chestsRevealed[index] = true;
+      await creeperLose(chestDiv, index);
+      return;
+    }
+    // safe open
+    playChestOpen();
+    chestsRevealed[index] = true;
+    chestDiv.classList.add('opened');
+    const itemType = chestItems[index];
+    let icon = '';
+    if(itemType === 'diamond') icon = '💎';
+    else if(itemType === 'gold') icon = '🪙';
+    else icon = '💚';
+    chestDiv.innerText = icon;
+    chestDiv.style.fontSize = '58px';
+    chestDiv.style.background = '#d9b45b';
+    chestDiv.setAttribute('data-item', itemType);
+    chestsOpenedSafe++;
+    updateUI();
+
+    // check jackpot full clear
+    if(chestsOpenedSafe === 6) {
+      // jackpot!
+      const winAmount = Math.floor(currentBet * 10);
+      balance += winAmount;
+      stats.totalWinnings += winAmount;
+      stats.jackpotsWon++;
+      stats.gamesPlayed++;
+      saveBalance();
+      saveStats();
+      updateUI();
+      playCashoutFanfare();
+      alert(`🔥 JACKPOT! You opened all 6 chests! Won ${winAmount} 💎! 🔥`);
+      gameActive = false;
+      disableChests(true);
+      setTimeout(() => resetRound(false), 1800);
+      return;
+    }
+    updateUI();
+  }
+
+  function disableChests(disabled) {
+    document.querySelectorAll('.chest').forEach(c => {
+      if(disabled) c.style.pointerEvents = 'none';
+      else c.style.pointerEvents = 'auto';
+    });
+  }
+
+  function resetRound(keepBet = true) {
+    // end round and reset board
+    gameActive = true;
+    chestsOpenedSafe = 0;
+    chestsRevealed.fill(false);
+    generateNewRound();
+    renderChests();
+    if(!keepBet) {
+      // new game reset
+    }
+    updateUI();
+    disableChests(false);
+    const fuseChestDiv = document.querySelector(`.chest[data-idx='${creeperIndex}']`);
+    if(fuseChestDiv) fuseChestDiv.classList.remove('fuse-burning');
+  }
+
+  function generateNewRound() {
+    creeperIndex = Math.floor(Math.random() * 6);
+    const itemsPool = ['diamond', 'gold', 'emerald'];
+    for(let i=0;i<6;i++) {
+      if(i===creeperIndex) chestItems[i] = 'creeper';
+      else {
+        const randItem = itemsPool[Math.floor(Math.random() * itemsPool.length)];
+        chestItems[i] = randItem;
+      }
+    }
+  }
+
+  function renderChests() {
+    chestGrid.innerHTML = '';
+    for(let i=0;i<6;i++) {
+      const chest = document.createElement('div');
+      chest.className = 'chest';
+      if(!chestsRevealed[i]) chest.classList.add('glow');
+      chest.setAttribute('data-idx', i);
+      chest.style.cursor = 'pointer';
+      if(chestsRevealed[i]) {
+        chest.classList.add('opened');
+        if(chestItems[i] === 'creeper') chest.innerText = '💀';
+        else {
+          let symbol = '';
+          if(chestItems[i]==='diamond') symbol='💎';
+          else if(chestItems[i]==='gold') symbol='🪙';
+          else symbol='💚';
+          chest.innerText = symbol;
+        }
+        chest.style.fontSize='58px';
+      } else {
+        chest.innerText = '';
+        chest.style.display='flex';
+        chest.style.alignItems='center';
+        chest.style.justifyContent='center';
+        // add fuse effect for creeper chest visual warning
+        if(i === creeperIndex && gameActive && !chestsRevealed[i]) {
+          chest.classList.add('fuse-burning');
+        } else {
+          chest.classList.remove('fuse-burning');
+        }
+        chest.innerHTML = '<span style="font-size:58px;">🧰</span>';
+      }
+      chest.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const idx = parseInt(chest.getAttribute('data-idx'));
+        if(!gameActive) return;
+        if(chestsRevealed[idx]) return;
+        openChest(idx);
+      });
+      chestGrid.appendChild(chest);
+    }
+    if(gameActive && document.querySelector(`.chest[data-idx='${creeperIndex}']`)) {
+      document.querySelector(`.chest[data-idx='${creeperIndex}']`).classList.add('fuse-burning');
+    }
+  }
+
+  function cashOut() {
+    if(!gameActive) return;
+    if(chestsOpenedSafe === 0) {
+      alert("Open at least one chest before cashing out!");
+      return;
+    }
+    const winAmount = Math.floor(currentBet * currentMultiplier);
+    balance += winAmount;
+    stats.totalWinnings += winAmount;
+    stats.gamesPlayed++;
+    saveBalance();
+    saveStats();
+    playCashoutFanfare();
+    updateUI();
+    alert(`💰 Cashed out! You won ${winAmount} 💎 with ${currentMultiplier}x multiplier!`);
+    gameActive = false;
+    disableChests(true);
+    setTimeout(() => resetRound(false), 800);
+  }
+
+  function startNewRoundWithBet() {
+    if(!gameActive) {
+      resetRound(false);
+    }
+    if(balance < currentBet) {
+      alert(`Not enough diamonds! Need ${currentBet} 💎. Your balance: ${balance}`);
+      return false;
+    }
+    if(gameActive === true && chestsOpenedSafe >0) {
+      if(!confirm("Starting new round will reset current progress. Proceed?")) return false;
+    }
+    balance -= currentBet;
+    saveBalance();
+    gameActive = true;
+    chestsOpenedSafe = 0;
+    chestsRevealed.fill(false);
+    generateNewRound();
+    renderChests();
+    updateUI();
+    disableChests(false);
+    return true;
+  }
+
+  // event binding
+  document.getElementById('cashOutBtn').addEventListener('click', () => { if(gameActive && chestsOpenedSafe>0) cashOut(); else alert("No active round or no chests opened!"); });
+  document.getElementById('resetRoundBtn').addEventListener('click', () => { startNewRoundWithBet(); });
+
+  document.querySelectorAll('.bet-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      const val = parseInt(btn.getAttribute('data-bet'));
+      if(!isNaN(val)) {
+        currentBet = val;
+        document.querySelectorAll('.bet-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        updateUI();
+      }
+    });
+  });
+
+  function init() {
+    loadBalance();
+    loadStats();
+    generateNewRound();
+    renderChests();
+    gameActive = true;
+    chestsOpenedSafe = 0;
+    chestsRevealed.fill(false);
+    updateUI();
+    disableChests(false);
+  }
+  init();
+</script>
+</body>
+</html>

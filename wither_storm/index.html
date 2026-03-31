@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Wither Storm Wheel - Minecraft Gambling Game</title>
+    <!-- Minecraft Font & Google Fonts backup -->
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+    <!-- Canvas + Full Game Logic -->
+    <style>
+        * {
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #0a0c12;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Press Start 2P', 'Minecraft', monospace;
+            padding: 20px;
+            position: relative;
+            overflow-x: auto;
+        }
+
+        /* Minecraft pixelated texture background (Netherrack style) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: repeating-linear-gradient(45deg, #5e2a2a 0px, #5e2a2a 2px, #7a3e3e 2px, #7a3e3e 8px);
+            opacity: 0.5;
+            z-index: -2;
+        }
+
+        /* Soul fire particles canvas */
+        #particle-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .game-container {
+            max-width: 1300px;
+            width: 100%;
+            background: rgba(30, 20, 20, 0.85);
+            border-radius: 48px;
+            padding: 20px;
+            box-shadow: 0 0 0 4px #4a2e2e, 0 0 0 8px #2c1a1a;
+            backdrop-filter: blur(2px);
+            border: 2px solid #f5b642;
+        }
+
+        .minecraft-panel {
+            background: #2c1e1a;
+            border-radius: 20px;
+            padding: 16px;
+            box-shadow: inset 0 0 0 2px #6b4c3b, 0 8px 0 #1a120e;
+        }
+
+        .wheel-area {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 30px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        canvas {
+            background: #2d2a1e;
+            border-radius: 50%;
+            box-shadow: 0 0 0 8px #3e2a1f, 0 0 0 12px #f7b32b, 0 10px 25px black;
+            transition: all 0.2s;
+        }
+
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            background: #231f1b;
+            padding: 15px;
+            border-radius: 24px;
+            margin-top: 20px;
+            border: 2px solid #f5b642;
+        }
+
+        .stat-card {
+            background: #000000aa;
+            padding: 8px 12px;
+            border-radius: 16px;
+            text-align: center;
+            color: #ffd966;
+            text-shadow: 2px 2px 0 #4a2e1e;
+            font-size: 12px;
+        }
+
+        .stat-value {
+            font-size: 22px;
+            font-weight: bold;
+            color: #ffaa33;
+        }
+
+        .button {
+            background: #5e3a2a;
+            border: none;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 14px;
+            padding: 10px 18px;
+            color: #f5cf87;
+            text-shadow: 1px 1px 0 #2a1a0a;
+            box-shadow: 0 5px 0 #2a1a0a;
+            cursor: pointer;
+            transition: 0.07s linear;
+            border-radius: 12px;
+        }
+
+        .button:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #2a1a0a;
+        }
+
+        .button-primary {
+            background: #2b6e2b;
+            box-shadow: 0 5px 0 #154015;
+            color: #e2ffb0;
+        }
+
+        .button-danger {
+            background: #8b2c2c;
+            box-shadow: 0 5px 0 #4a1515;
+        }
+
+        .control-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .bet-selector {
+            background: #1f1a16;
+            padding: 5px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input, select {
+            background: #362812;
+            border: 2px solid #f5b642;
+            padding: 8px;
+            font-family: monospace;
+            font-weight: bold;
+            color: #ffdd99;
+            border-radius: 12px;
+        }
+
+        .history-list {
+            background: #0e0b08;
+            border-radius: 16px;
+            padding: 8px;
+            max-height: 80px;
+            overflow-y: auto;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .history-badge {
+            background: #2e241f;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+        }
+
+        .wither-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, #000000dd, #000);
+            pointer-events: none;
+            z-index: 999;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        @keyframes lightning {
+            0% { background: rgba(255,255,200,0.9); }
+            100% { background: transparent; }
+        }
+
+        .lightning-flash {
+            animation: lightning 0.2s ease-out;
+        }
+
+        @media (max-width: 720px) {
+            canvas { width: 280px; height: 280px; }
+            .button { font-size: 10px; padding: 6px 12px; }
+            .stat-value { font-size: 18px; }
+        }
+    </style>
+</head>
+<body>
+<div class="game-container">
+    <div class="minecraft-panel">
+        <div class="wheel-area">
+            <canvas id="wheelCanvas" width="500" height="500" style="width:100%; max-width:500px; height:auto; aspect-ratio:1/1"></canvas>
+            <div style="min-width: 200px;">
+                <div class="stat-card">💎 DIAMONDS <span id="diamondBalance" class="stat-value">1000</span></div>
+                <div class="stat-card">🎰 CURRENT MULTIPLIER <span id="currentMultiplier" class="stat-value">1x</span></div>
+                <div class="stat-card">🏆 WIN STREAK <span id="winStreak" class="stat-value">0</span></div>
+                <div class="stat-card">⚡ NEXT SPIN BONUS <span id="streakBonus" class="stat-value">+0%</span></div>
+                <div class="control-group">
+                    <div class="bet-selector">
+                        <span>💰 BET</span>
+                        <input type="number" id="betAmount" value="10" step="5" min="5" style="width:80px">
+                    </div>
+                    <button id="spinBtn" class="button button-primary">🌀 SPIN WHEEL</button>
+                    <button id="bankBtn" class="button">🏦 BANK WINNINGS</button>
+                    <button id="doubleBtn" class="button" style="background:#d48d2b">⚡ DOUBLE OR NOTHING</button>
+                </div>
+                <div class="control-group">
+                    <label>🔄 AUTO-SPIN</label>
+                    <input type="checkbox" id="autoSpinToggle">
+                    <label>⛔ Stop on Wither</label>
+                    <input type="checkbox" id="stopOnWither" checked>
+                    <label>🎯 Auto-Bank at ≥</label>
+                    <select id="autoBankThreshold">
+                        <option value="0">OFF</option><option value="5">5x</option><option value="10">10x</option><option value="15">15x</option><option value="20">20x</option><option value="25">25x</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-panel">
+            <div class="stat-card">📊 TOTAL SPINS <span id="totalSpins" class="stat-value">0</span></div>
+            <div class="stat-card">💰 TIMES BANKED <span id="bankedCount" class="stat-value">0</span></div>
+            <div class="stat-card">💀 WITHER HITS <span id="witherHits" class="stat-value">0</span></div>
+            <div class="stat-card">🏆 HIGHEST BANK <span id="highestBank" class="stat-value">0</span></div>
+        </div>
+
+        <div><span>📜 Multiplier History (last 10)</span>
+            <div id="historyList" class="history-list"></div>
+        </div>
+    </div>
+</div>
+<div id="witherOverlay" class="wither-overlay"></div>
+<canvas id="particle-canvas"></canvas>
+
+<script>
+    (function() {
+        // ------------------- MINECRAFT THEME SEGMENTS --------------------
+        const SEGMENTS = [
+            { name: "2x",     multiplier: 2,   color: "#3b7a57" },
+            { name: "2x",     multiplier: 2,   color: "#3b7a57" },
+            { name: "3x",     multiplier: 3,   color: "#4c8c6a" },
+            { name: "3x",     multiplier: 3,   color: "#4c8c6a" },
+            { name: "5x",     multiplier: 5,   color: "#5e9c7a" },
+            { name: "5x",     multiplier: 5,   color: "#5e9c7a" },
+            { name: "7x",     multiplier: 7,   color: "#d9a13b" },
+            { name: "10x",    multiplier: 10,  color: "#e8b45e" },
+            { name: "15x",    multiplier: 15,  color: "#f5c97a" },
+            { name: "20x",    multiplier: 20,  color: "#ffb347" },
+            { name: "25x",    multiplier: 25,  color: "#ff9f4a" },
+            { name: "50x",    multiplier: 50,  color: "#ff8c42" },
+            { name: "WITHER STORM", multiplier: 0, color: "#4a0f2e", isWither: true }
+        ];
+        const SEGMENT_COUNT = SEGMENTS.length;
+        let anglePerSegment = (Math.PI * 2) / SEGMENT_COUNT;
+
+        // Game state
+        let diamonds = 1000;
+        let currentWinMultiplier = 1;   // accumulated multiplier for current streak (bank resets)
+        let winStreak = 0;
+        let spinning = false;
+        let spinAnimationId = null;
+        let currentRotation = 0;          // wheel rotation radians
+        let stopAngle = 0;
+        let spinVelocity = 0;
+        let spinDecay = 0.985;
+        let lastTimestamp = 0;
+        
+        // Statistics
+        let totalSpins = 0;
+        let bankedCount = 0;
+        let witherHits = 0;
+        let highestBankedMulti = 1;
+        let multiplierHistory = [];   // store last 10 spin results (multiplier or "WITHER")
+        
+        // DOM elements
+        const canvas = document.getElementById('wheelCanvas');
+        const ctx = canvas.getContext('2d');
+        const diamondSpan = document.getElementById('diamondBalance');
+        const currentMultiplierSpan = document.getElementById('currentMultiplier');
+        const winStreakSpan = document.getElementById('winStreak');
+        const streakBonusSpan = document.getElementById('streakBonus');
+        const totalSpinsSpan = document.getElementById('totalSpins');
+        const bankedCountSpan = document.getElementById('bankedCount');
+        const witherHitsSpan = document.getElementById('witherHits');
+        const highestBankSpan = document.getElementById('highestBank');
+        const historyDiv = document.getElementById('historyList');
+        const betInput = document.getElementById('betAmount');
+        const spinBtn = document.getElementById('spinBtn');
+        const bankBtn = document.getElementById('bankBtn');
+        const doubleBtn = document.getElementById('doubleBtn');
+        const autoSpinToggle = document.getElementById('autoSpinToggle');
+        const stopOnWither = document.getElementById('stopOnWither');
+        const autoBankThreshold = document.getElementById('autoBankThreshold');
+        const witherOverlay = document.getElementById('witherOverlay');
+        
+        // Sounds (Web Audio simple beep / synth for authenticity)
+        let audioCtx = null;
+        function initAudio() { if(!audioCtx && window.AudioContext) { audioCtx = new AudioContext(); } }
+        function playTone(freq, duration, type='sine', volume=0.2) {
+            if(!audioCtx) return;
+            const now = audioCtx.currentTime;
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            osc.type = type;
+            osc.frequency.value = freq;
+            gain.gain.setValueAtTime(volume, now);
+            gain.gain.exponentialRampToValueAtTime(0.0001, now + duration);
+            osc.start();
+            osc.stop(now + duration);
+        }
+        function playSpinSound() { playTone(320, 0.08, 'sawtooth', 0.1); }
+        function playTick() { playTone(880, 0.05, 'square', 0.08); }
+        function playWinFanfare() { playTone(523.25,0.2); setTimeout(()=>playTone(659.25,0.3),150); setTimeout(()=>playTone(783.99,0.5),350); }
+        function playWitherRoar() { if(audioCtx){ const osc=audioCtx.createOscillator(); osc.type='sawtooth'; osc.frequency.value=150; const gain=audioCtx.createGain(); gain.gain.value=0.5; gain.gain.exponentialRampToValue(0.001,1); osc.connect(gain); gain.connect(audioCtx.destination); osc.start(); osc.stop(0.8); } }
+        function playLandSound(mult) { if(mult===0) playWitherRoar(); else playTone(400 + mult*5, 0.12, 'triangle', 0.15); }
+        
+        // Helper: update UI
+        function updateUI() {
+            diamondSpan.innerText = Math.floor(diamonds);
+            currentMultiplierSpan.innerText = currentWinMultiplier + 'x';
+            winStreakSpan.innerText = winStreak;
+            let bonusPercent = Math.min(winStreak * 5, 100);
+            streakBonusSpan.innerText = `+${bonusPercent}%`;
+            totalSpinsSpan.innerText = totalSpins;
+            bankedCountSpan.innerText = bankedCount;
+            witherHitsSpan.innerText = witherHits;
+            highestBankSpan.innerText = highestBankedMulti;
+            localStorage.setItem('witherWheelData', JSON.stringify({diamonds, totalSpins, bankedCount, witherHits, highestBankedMulti}));
+        }
+        
+        function addHistory(entry) {
+            multiplierHistory.unshift(entry);
+            if(multiplierHistory.length > 10) multiplierHistory.pop();
+            historyDiv.innerHTML = multiplierHistory.map(h => `<div class="history-badge">${h}</div>`).join('');
+        }
+        
+        function saveGame() { updateUI(); }
+        
+        function loadGame() {
+            const saved = localStorage.getItem('witherWheelData');
+            if(saved) {
+                try {
+                    const data = JSON.parse(saved);
+                    diamonds = data.diamonds || 1000;
+                    totalSpins = data.totalSpins || 0;
+                    bankedCount = data.bankedCount || 0;
+                    witherHits = data.witherHits || 0;
+                    highestBankedMulti = data.highestBankedMulti || 1;
+                } catch(e) {}
+            }
+            if(diamonds<=0) diamonds = 100;
+            updateUI();
+        }
+        
+        function bankWinnings() {
+            if(spinning) return;
+            if(currentWinMultiplier <= 1) { playTick(); return; }
+            let betVal = parseInt(betInput.value);
+            if(isNaN(betVal)) betVal = 10;
+            let gain = betVal * currentWinMultiplier;
+            diamonds += gain;
+            if(currentWinMultiplier > highestBankedMulti) highestBankedMulti = currentWinMultiplier;
+            bankedCount++;
+            addHistory(`🏦 BANKED ${currentWinMultiplier}x`);
+            currentWinMultiplier = 1;
+            winStreak = 0;
+            playWinFanfare();
+            updateUI();
+            if(autoSpinToggle.checked) setTimeout(()=> { if(!spinning) spin(); }, 300);
+        }
+        
+        function resetAfterWither() {
+            let betVal = parseInt(betInput.value);
+            if(isNaN(betVal)) betVal = 10;
+            // lose only current bet multiplied? Actually "lose everything" means current winnings reset + lose bet amount? Game concept: landing on wither makes you lose everything (current multiplier gains + bet)
+            diamonds -= betVal * currentWinMultiplier;
+            if(diamonds < 0) diamonds = 0;
+            currentWinMultiplier = 1;
+            winStreak = 0;
+            witherHits++;
+            updateUI();
+            addHistory(`💀 WITHER STORM - LOST`);
+            // Wither storm animations
+            witherOverlay.style.opacity = '0.9';
+            setTimeout(()=>{ witherOverlay.style.opacity = '0'; }, 800);
+            document.body.classList.add('lightning-flash');
+            setTimeout(()=>document.body.classList.remove('lightning-flash'), 200);
+            // extra explosion effect canvas
+            playWitherRoar();
+            for(let i=0;i<8;i++) setTimeout(()=>playTone(80+Math.random()*200,0.2,'sawtooth',0.1), i*60);
+            if(autoSpinToggle.checked && stopOnWither.checked) { autoSpinToggle.checked = false; }
+        }
+        
+        function applyWin(multiplierValue) {
+            if(multiplierValue === 0) { // wither
+                resetAfterWither();
+                return false;
+            }
+            let bonusMult = 1 + Math.min(winStreak * 0.05, 1.0);
+            let effectiveMulti = multiplierValue * bonusMult;
+            currentWinMultiplier *= effectiveMulti;
+            winStreak++;
+            addHistory(`${multiplierValue}x (streak ${winStreak})`);
+            playLandSound(multiplierValue);
+            // win particles & coin rain effect (simple flash)
+            canvas.style.boxShadow = '0 0 0 8px gold, 0 0 0 12px #f7b32b';
+            setTimeout(()=>canvas.style.boxShadow = '0 0 0 8px #3e2a1f, 0 0 0 12px #f7b32b', 300);
+            playWinFanfare();
+            updateUI();
+            // auto-bank check
+            let threshold = parseInt(autoBankThreshold.value);
+            if(threshold > 0 && currentWinMultiplier >= threshold && !spinning) {
+                setTimeout(()=> bankWinnings(), 100);
+            }
+            return true;
+        }
+        
+        function spin() {
+            if(spinning) return;
+            let bet = parseInt(betInput.value);
+            if(isNaN(bet) || bet <= 0) bet = 10;
+            if(diamonds < bet) { alert("Not enough diamonds!"); return; }
+            diamonds -= bet;
+            updateUI();
+            totalSpins++;
+            updateUI();
+            initAudio();
+            spinVelocity = 25 + Math.random() * 18;
+            spinning = true;
+            playSpinSound();
+            function animateSpin(now) {
+                if(!spinning) return;
+                spinVelocity *= spinDecay;
+                currentRotation = (currentRotation + spinVelocity * 0.02) % (Math.PI*2);
+                drawWheel();
+                if(Math.abs(spinVelocity) < 0.15) {
+                    // stopping
+                    spinning = false;
+                    if(spinAnimationId) cancelAnimationFrame(spinAnimationId);
+                    spinAnimationId = null;
+                    // determine result segment
+                    let pointerAngle = Math.PI/2; // marker at top
+                    let rawAngle = (currentRotation + pointerAngle + Math.PI*2) % (Math.PI*2);
+                    let segIndex = Math.floor((rawAngle % (Math.PI*2)) / anglePerSegment);
+                    segIndex = (SEGMENT_COUNT - segIndex) % SEGMENT_COUNT;
+                    const result = SEGMENTS[segIndex];
+                    playTick();
+                    if(result.isWither) {
+                        applyWin(0);
+                    } else {
+                        applyWin(result.multiplier);
+                    }
+                    drawWheel();
+                    if(autoSpinToggle.checked && !spinning && diamonds > 0) {
+                        let betNow = parseInt(betInput.value);
+                        if(diamonds >= betNow) setTimeout(()=> spin(), 500);
+                        else autoSpinToggle.checked = false;
+                    }
+                    return;
+                }
+                spinAnimationId = requestAnimationFrame(animateSpin);
+            }
+            if(spinAnimationId) cancelAnimationFrame(spinAnimationId);
+            spinAnimationId = requestAnimationFrame(animateSpin);
+        }
+        
+        function doubleOrNothing() {
+            if(spinning) return;
+            if(currentWinMultiplier <= 1) { playTick(); return; }
+            let currentPotential = currentWinMultiplier * parseInt(betInput.value);
+            if(diamonds < currentPotential && currentWinMultiplier>1) { alert("Insufficient diamonds to risk double or nothing"); return; }
+            // special high risk: spin again, but if you lose you lose current multiplier AND bet amount?
+            // rule: current win streak is at risk, if wither, lose everything (current multiplier progress + bet amount not yet banked)
+            // We implement: double or nothing spin: if win, multiplier doubles; if wither, lose progress + lose the current bank amount from diamonds
+            let riskSpin = () => {
+                if(spinning) return;
+                let betVal = parseInt(betInput.value);
+                let atRiskValue = betVal * currentWinMultiplier;
+                spinVelocity = 30 + Math.random() * 15;
+                spinning = true;
+                function riskAnimate(now) {
+                    spinVelocity *= spinDecay;
+                    currentRotation = (currentRotation + spinVelocity * 0.02) % (Math.PI*2);
+                    drawWheel();
+                    if(Math.abs(spinVelocity) < 0.15) {
+                        spinning = false;
+                        let pointerAngle = Math.PI/2;
+                        let rawAngle = (currentRotation + pointerAngle) % (Math.PI*2);
+                        let segIndex = Math.floor((rawAngle) / anglePerSegment);
+                        segIndex = (SEGMENT_COUNT - segIndex) % SEGMENT_COUNT;
+                        const result = SEGMENTS[segIndex];
+                        if(result.isWither) {
+                            // lose everything: multiplier resets and also lose the double or nothing bet (we already subtracted nothing but we take from diamonds)
+                            diamonds -= atRiskValue;
+                            if(diamonds<0) diamonds=0;
+                            currentWinMultiplier = 1;
+                            winStreak = 0;
+                            witherHits++;
+                            addHistory(`💀 DOUBLE OR NOTHING LOST`);
+                            updateUI();
+                            playWitherRoar();
+                            witherOverlay.style.opacity='0.9';
+                            setTimeout(()=>witherOverlay.style.opacity='0',500);
+                        } else {
+                            let effective = result.multiplier * (1 + Math.min(winStreak * 0.05,1.0));
+                            currentWinMultiplier *= effective;
+                            winStreak++;
+                            addHistory(`⚡ DOUBLE WIN: ${result.multiplier}x`);
+                            playWinFanfare();
+                            updateUI();
+                        }
+                        drawWheel();
+                        if(autoSpinToggle.checked && !spinning && diamonds>0) spin();
+                        return;
+                    }
+                    requestAnimationFrame(riskAnimate);
+                }
+                riskAnimate();
+            };
+            riskSpin();
+        }
+        
+        // Draw Minecraft wheel with textures feel
+        function drawWheel() {
+            const w = canvas.width, h = canvas.height;
+            const centerX = w/2, centerY = h/2;
+            const radius = Math.min(w,h)*0.44;
+            ctx.clearRect(0,0,w,h);
+            for(let i=0;i<SEGMENT_COUNT;i++) {
+                const start = i * anglePerSegment + currentRotation;
+                const end = (i+1) * anglePerSegment + currentRotation;
+                const seg = SEGMENTS[i];
+                ctx.beginPath();
+                ctx.moveTo(centerX, centerY);
+                ctx.arc(centerX, centerY, radius, start, end);
+                ctx.fillStyle = seg.color;
+                ctx.fill();
+                ctx.strokeStyle = "#2a2418";
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.save();
+                ctx.translate(centerX, centerY);
+                ctx.rotate(start + anglePerSegment/2);
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                let fontSize = 18;
+                ctx.font = `bold ${fontSize}px "Press Start 2P", monospace`;
+                let displayName = seg.name;
+                if(seg.isWither) displayName = "☠️";
+                ctx.fillStyle = "#FFF5CF";
+                ctx.shadowBlur=0;
+                ctx.fillText(displayName, radius*0.7, 8);
+                if(!seg.isWither && seg.multiplier) ctx.fillText(seg.multiplier+"x", radius*0.7, -12);
+                ctx.restore();
+            }
+            // center circle
+            ctx.beginPath();
+            ctx.arc(centerX, centerY, radius*0.2, 0, 2*Math.PI);
+            ctx.fillStyle = "#3b2a1f";
+            ctx.fill();
+            ctx.fillStyle = "#ffc857";
+            ctx.font = `18px "Press Start 2P"`;
+            ctx.fillText("⚡", centerX-12, centerY+8);
+            // marker
+            ctx.beginPath();
+            ctx.moveTo(centerX-15, centerY-radius-12);
+            ctx.lineTo(centerX, centerY-radius-28);
+            ctx.lineTo(centerX+15, centerY-radius-12);
+            ctx.fillStyle = "#f5b642";
+            ctx.fill();
+        }
+        
+        // Particle canvas (soul fire)
+        const particleCanvas = document.getElementById('particle-canvas');
+        let pCtx = particleCanvas.getContext('2d');
+        let particles = [];
+        function resizeParticles() { particleCanvas.width = window.innerWidth; particleCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeParticles);
+        resizeParticles();
+        function addSoulFire() { for(let i=0;i<3;i++){ particles.push({x:Math.random()*particleCanvas.width, y:Math.random()*particleCanvas.height, size:3+Math.random()*6, alpha:0.5+Math.random()*0.5, vy:-0.5-Math.random()*1}); } }
+        setInterval(addSoulFire, 300);
+        function animateParticles() {
+            if(!pCtx) return;
+            pCtx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
+            for(let i=0;i<particles.length;i++) {
+                let p = particles[i];
+                pCtx.fillStyle = `rgba(255, 120, 30, ${p.alpha*0.6})`;
+                pCtx.beginPath();
+                pCtx.arc(p.x, p.y, p.size, 0, Math.PI*2);
+                pCtx.fill();
+                p.y += p.vy;
+                p.alpha -= 0.008;
+                if(p.y < 0 || p.alpha<=0) { particles.splice(i,1); i--; }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+        
+        // event listeners
+        spinBtn.onclick = ()=>{ if(!spinning) spin(); };
+        bankBtn.onclick = ()=>{ if(!spinning) bankWinnings(); };
+        doubleBtn.onclick = ()=>{ if(!spinning && currentWinMultiplier>1) doubleOrNothing(); else playTick(); };
+        
+        loadGame();
+        drawWheel();
+        setInterval(()=>{ if(!spinning) drawWheel(); }, 50);
+        // initial draw
+        window.addEventListener('load', ()=>{ drawWheel(); initAudio(); });
+    })();
+</script>
+</body>
+</html>
